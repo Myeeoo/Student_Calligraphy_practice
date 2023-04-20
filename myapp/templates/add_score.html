@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <table>
+        <thead style="width: 80%;">
+            <tr>
+                <td></td>
+                <td></td>
+                <td>设置日期</td>
+                <td><input type="date" name="All_datePick" id="allDatePick" value=""></td>
+            </tr>
+            <tr>
+                <th>学生姓名</th>
+                <th>分数</th>
+                <th>加分</th>
+                <th>日期</th>
+                <th>其他</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student, form in students_forms %}
+                
+            <tr>
+                <td>
+                  <!-- 'class': 'form-control' -->
+                   <select name="student" id="{{ student.pk }}" class="form-control">
+                      <option value="{{ student.pk }}">{{ student.name }}</option>
+                  </select>
+                </td>
+                <td><input type="number" name="{{ form.score.name }}_{{student.pk}}"
+                  id="ID_score_{{student.pk}}"
+                  value="{{ form.score.value|default:'' }}"
+                  class="form-control"></td>
+                <td><input type="number" name="{{ form.add_score.name }}_{{student.pk}}"
+                  id="ID_add_score_{{student.pk}}"
+                  value="{{ form.add_score.value|default:'0' }}"
+                  class="form-control"></td>
+                <td><input type="date" name="{{ form.date.name }}" id="{{ form.date.auto_id }}"
+                        value="{{ form.date.value|default:'' }}"></td>
+                <td>
+                    {% if form.errors %}
+                    <div style="font-size:xx-small" class="alert alert-danger">
+                      <p>请修正以下错误：</p>
+                      <ul>
+                        {% for field, errors in form.errors.items %}
+                          {% for error in errors %}
+                            <li>{{ field.name }}: {{ error }}</li>
+                          {% endfor %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+                     {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit">提交</button>
+</form>
+
+
+<script lang="js">
+    function setAllDate() {
+  // 获取所有日期输入框
+  var dateInputs = document.querySelectorAll('input[type="date"]');
+  // 获取选择的日期
+  var selectedDate = document.getElementById('allDatePick').value;
+  // 遍历所有日期输入框，将它们的值设置为选择的日期
+  for (var i = 0; i < dateInputs.length; i++) {
+    dateInputs[i].value = selectedDate;
+  }
+}
+var today = new Date();
+var year = today.getFullYear();
+var month = (today.getMonth() + 1).toString().padStart(2, '0');
+var day = today.getDate().toString().padStart(2, '0');
+var dateString = `${year}-${month}-${day}`;
+// 将函数绑定到选择框的 onchange 事件上
+document.getElementById('allDatePick').value = dateString;
+document.getElementById('allDatePick').onchange = setAllDate;
+
+
+</script>
+
+
+{% endblock %}

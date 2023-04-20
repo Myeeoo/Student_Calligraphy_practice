@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>学生详情</title>
+</head>
+<body class='form-control'>
+    <h1>学生详情</h1>
+    <p><strong>学号：</strong>{{ student.student_id }}</p>
+    <p><strong>姓名：</strong>{{ student.name }}</p>
+    <p><strong>性别：</strong>{{ student.sex }}</p>
+    <p><strong>年龄：</strong>{{ student.age }}</p>
+    <p><strong>班级：</strong>{{ student.grade }}</p>
+    <a href="{% url 'student_list' %}">返回学生列表</a>
+</body>
+</html>

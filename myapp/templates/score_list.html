@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>成绩列表</h1>
+  <a href="{% url 'add_score' %}">添加成绩表</a>
+  <!-- 引入 Bootstrap 样式 -->
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+
+<!-- 引入 jQuery 和 Bootstrap JavaScript -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.slim.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+  <!-- 创建标签页导航 -->
+  <ul class="nav nav-tabs">
+    {% for date, score_list in scores.items %}
+        <li class="nav-item">
+            <a class="nav-link{% if forloop.first %} active{% endif %}" data-toggle="tab" href="#{{ date }}">{{ date }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+  <!-- 创建标签页内容 -->
+  <div class="tab-content">
+    {% for date, score_list in scores.items %}
+        <div class="tab-pane{% if forloop.first %} active{% endif %}" id="{{ date }}">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>得分</th>
+                        <th>加分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in score_list %}
+                        <tr>
+                            <td>{{ score.student.name }}</td>
+                            <td>{{ score.score }}</td>
+                            <td>{{ score.add_score }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+</div>
+
+
+<script>
+  $(function() {
+      // 初始化选项卡
+      $('.nav-tabs a').on('shown.bs.tab', function (e) {
+          var tab_id = $(this).attr('href');
+          localStorage.setItem('active_tab', tab_id);
+      });
+
+      // 恢复活动选项卡
+      var active_tab = localStorage.getItem('active_tab');
+      if (active_tab) {
+          $('.nav-tabs a[href="' + active_tab + '"]').tab('show');
+      }
+  });
+</script>
+{% endblock %}
