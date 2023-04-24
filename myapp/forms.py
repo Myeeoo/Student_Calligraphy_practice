@@ -26,6 +26,11 @@ class ScoreForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.student = self.cleaned_data['student']  # 将学生实例添加到模型实例中
+        score = self.cleaned_data.get('score', 0)
+        add_score = self.cleaned_data.get('add_score', 0)
+        instance = super().save(commit=False)
+        instance.score = score
+        instance.add_score = add_score
         if commit:
             instance.save()
         return instance
