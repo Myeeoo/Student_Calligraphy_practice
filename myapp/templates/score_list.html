@@ -10,11 +10,14 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.slim.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
+<script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+
+
   <!-- 创建标签页导航 -->
   <ul class="nav nav-tabs">
     {% for date, score_list in scores.items %}
         <li class="nav-item">
-            <a class="nav-link{% if forloop.first %} active{% endif %}" data-toggle="tab" href="#{{ date }}">{{ date }}</a>
+            <a class="nav-link{% if forloop.first %} active{% endif %}" data-toggle="tab" href="#{{ date|date:'Y-m-d' }}">{{ date|date:'Y-m-d' }}</a>
         </li>
     {% endfor %}
 </ul>
@@ -22,7 +25,7 @@
   <!-- 创建标签页内容 -->
   <div class="tab-content">
     {% for date, score_list in scores.items %}
-        <div class="tab-pane{% if forloop.first %} active{% endif %}" id="{{ date }}">
+        <div class="tab-pane{% if forloop.first %} active{% endif %}" id="{{ date|date:'Y-m-d'  }}">
             <table class="table table-bordered">
                 <thead>
                     <tr>
