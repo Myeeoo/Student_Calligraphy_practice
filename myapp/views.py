@@ -119,15 +119,9 @@ def add_score(request):
         print(len(forms))
         
         for student, form in zip(students, forms):
-                # form.score = request.POST.get('score_%d' % student.pk)
-                # form.add_score = request.POST.get('add_score_%d' % student.pk)
-                
                 form.fields['score'].widget.attrs.update({'name': f'score_{student.pk}'})
                 form.fields['add_score'].widget.attrs.update({'name': f'add_score_{student.pk}'})
-                print(student)
-                # print(form.score)
                 
-                # print(form.add_score)
                 
         
         # for form, student in zip(forms, students):
@@ -138,20 +132,24 @@ def add_score(request):
                 form.cleaned_data['student'] = student  # 将学生实例添加到表单数据中
                 form.score = request.POST.get('score_%d' % student.pk)
                 form.add_score = request.POST.get('add_score_%d' % student.pk)
-                #{{ form.add_score.name }}_{{student.pk}}
-
-                # form.cleaned_data['score'] = request.POST.get('score_%d' % student.pk)
-                # form.cleaned_data['add_score'] = request.POST.get('add_score_%d' % student.pk)
+                form.cleaned_data['score'] = request.POST.get('score_%d' % student.pk)
+                form.cleaned_data['add_score'] = request.POST.get('add_score_%d' % student.pk)
                 #print(form.score)
                 
-                print(form.student)
-                print("姓名：", form.data.get('student'))
-                print("学生编号：", form.cleaned_data.get('student_id'))
-                print("得分:",form.cleaned_data['score'])
+                # print(form.student)
+                # print("姓名：", form.data.get('student'))
+                # print("学生编号：", form.cleaned_data.get('student_id'))
+                # print("得分:",form.cleaned_data['score'])
                 
-                print(form.cleaned_data)
+                # print(form.cleaned_data)
                 # form.cleaned_data['student'] = student
-                form.save()  # 保存表单数据到数据库
+                if form.is_valid():
+                    form.save()# 保存表单数据到数据库
+                else:
+                    print("出错:")
+                    print("姓名：", form.data.get('student'))
+                    print("学生编号：", form.cleaned_data.get('student_id'))
+                    print("得分:",form.cleaned_data['score'])
             return redirect('score_list')  # 保存成功后重定向到分数列表页面
         else:
             for field_name, error_messages in form.errors.items():
