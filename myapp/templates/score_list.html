@@ -42,21 +42,29 @@
 <script>
     
   $(function() {
-    console.log('ready');
       // 初始化选项卡
       $('.nav-tabs a').on('shown.bs.tab', function (e) {
-            console.log('Tab clicked!');
+            // alert(active_tab);
             var tab_id = $(this).attr('href');
-            console.log(tab_id); // 输出变量tab_id的值
-            localStorage.setItem('active_tab', tab_id);
+            var active_tab = localStorage.getItem('active_tab');
+            //  alert(tab_id); // 输出变量tab_id的值
+             localStorage.setItem('active_tab', tab_id);
+            $(tab_id).removeClass('tab-pane').addClass('tab-pane active show');
+            $(active_tab).removeClass('tab-pane active show').addClass('tab-pane');
       });
       
       // 恢复活动选项卡
       var active_tab = localStorage.getItem('active_tab');
-      alert(active_tab);
+      
       if (active_tab) {
           $('.nav-tabs a[href="' + active_tab + '"]').tab('show');
-      }
+          $(active_tab).removeClass('tab-pane').addClass('tab-pane active show');
+        //   alert(active_tab); // 输出变量tab_id的值
+      }else {
+        // 显示默认选项卡
+        $('.nav-tabs a:first').tab('show');
+        alert("默认"); // 输出变量tab_id的值
+    }
   });
 </script>
 {% endblock %}
