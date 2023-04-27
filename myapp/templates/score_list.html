@@ -3,16 +3,6 @@
 {% block content %}
   <h1>成绩列表</h1>
   <a href="{% url 'add_score' %}">添加成绩表</a>
-  <!-- 引入 Bootstrap 样式 -->
-<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
-
-<!-- 引入 jQuery 和 Bootstrap JavaScript -->
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.slim.min.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
-
-<script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
-
-
   <!-- 创建标签页导航 -->
   <ul class="nav nav-tabs">
     {% for date, score_list in scores.items %}
@@ -50,15 +40,20 @@
 
 
 <script>
+    
   $(function() {
+    console.log('ready');
       // 初始化选项卡
       $('.nav-tabs a').on('shown.bs.tab', function (e) {
-          var tab_id = $(this).attr('href');
-          localStorage.setItem('active_tab', tab_id);
+            console.log('Tab clicked!');
+            var tab_id = $(this).attr('href');
+            console.log(tab_id); // 输出变量tab_id的值
+            localStorage.setItem('active_tab', tab_id);
       });
-
+      
       // 恢复活动选项卡
       var active_tab = localStorage.getItem('active_tab');
+      alert(active_tab);
       if (active_tab) {
           $('.nav-tabs a[href="' + active_tab + '"]').tab('show');
       }
