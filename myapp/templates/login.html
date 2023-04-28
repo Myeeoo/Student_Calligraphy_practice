@@ -10,14 +10,16 @@
 {% endif %}
 <form method="post" action="{% url 'login_v' %}">
     {% csrf_token %}
+    <div class="container">
     <div class="form-group">
-      <label for="username">用户名:</label>
+      <label for="username">用 户 名:</label>
       <input type="text" class="form-control" id="username" name="username">
     </div>
     <div class="form-group">
-      <label for="password">密码:</label>
+      <label for="password">密    码:</label>
       <input type="password" class="form-control" id="password" name="password">
     </div>
+  </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary">登录</button>
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>

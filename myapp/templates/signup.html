@@ -11,15 +11,15 @@
 <form method="post" action="{% url 'signup' %}">
   {% csrf_token %}
   <div class="form-group">
-      <label for="{{ form.username.id_for_label }}">用户名:</label>
+      <label for="{{ form.username.id_for_label }}">用  户  名:</label>
       {{ form.username }}
   </div>
   <div class="form-group">
-      <label for="{{ form.email.id_for_label }}">邮箱:</label>
+      <label for="{{ form.email.id_for_label }}">邮      箱:</label>
       {{ form.email }}
   </div>
   <div class="form-group">
-      <label for="{{ form.password1.id_for_label }}">密码:</label>
+      <label for="{{ form.password1.id_for_label }}">密      码:</label>
       {{ form.password1 }}
   </div>
   <div class="form-group">

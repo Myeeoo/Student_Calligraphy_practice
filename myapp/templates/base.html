@@ -3,24 +3,14 @@
 <head>
     <script>{% load static %}</script>
      <!-- 引入 jQuery 和 Bootstrap JavaScript -->
-<<<<<<< HEAD
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.slim.min.js"></script>
-=======
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.slim.min.js"></script>
->>>>>>> 6a47b4006330c70dea1e38b49dcd3d6cd6d9547e
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
 
     <!-- 引入 Bootstrap 的 JavaScript 文件 -->
-<<<<<<< HEAD
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
-=======
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
     
->>>>>>> 6a47b4006330c70dea1e38b49dcd3d6cd6d9547e
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,16 +27,17 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon">111</span>
         </button>
+        
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">首页</a>
+                </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="/">学生列表<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{% url 'student_list' %}">学生列表</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../score/">成绩单</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">统计</a>
+                    <a class="nav-link" href="{% url 'score_list' %}">成绩单</a>
                 </li>
                {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
@@ -116,26 +107,27 @@
           <form method="post" action="{% url 'signup' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">用户名:</label>
-                {{ form.username }}
+                <label for="username">用户名:</label>
+                <input type="text" class="form-control" name="username" id="username">
             </div>
             <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">邮箱:</label>
-                {{ form.email }}
+                <label for="email">邮箱:</label>
+                <input type="email" class="form-control" name="email" id="email">
             </div>
             <div class="form-group">
-                <label for="{{ form.password1.id_for_label }}">密码:</label>
-                {{ form.password1 }}
+                <label for="password1">密码:</label>
+                <input type="password" class="form-control" name="password1" id="password1">
             </div>
             <div class="form-group">
-                <label for="{{ form.password2.id_for_label }}">确认密码:</label>
-                {{ form.password2 }}
+                <label for="password2">确认密码:</label>
+                <input type="password" class="form-control" name="password2" id="password2">
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">注册</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
             </div>
         </form>
+        
         
           
         </div>
@@ -148,7 +140,17 @@
         <!-- 内容区域 -->
         <h1>精耕细作，字字珠玑</h1>
         <p>不求快，但求好。 </p>
+        <div>
+          {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
         <div class="container mt-4">
+          
             {% block content %}
             {% endblock %}
         </div>

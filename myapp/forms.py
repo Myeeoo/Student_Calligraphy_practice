@@ -8,11 +8,30 @@ class LoginForm(forms.Form):
     password = forms.CharField(label='密码', widget=forms.PasswordInput)
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
+    email = forms.EmailField(max_length=254, help_text='必填项')
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+        widgets ={
+            'username': forms.TextInput(attrs={'class': 'form-control'}), 
+            'email' : forms.TextInput(attrs={'class': 'form-control'}), 
+            'password1':forms.PasswordInput(attrs={'class': 'form-control'}), 
+            'password2':forms.PasswordInput(attrs={'class': 'form-control'})
+            }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("该邮箱已被注册，请使用其他邮箱")
+        return email
                                
 class ScoreForm(forms.ModelForm):
     student = forms.ModelChoiceField(queryset=Student.objects.all(),

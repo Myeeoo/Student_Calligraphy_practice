@@ -17,12 +17,15 @@ from django.contrib.auth import authenticate, login
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
+        print(form)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = True
             user.save()
             messages.success(request, '注册成功！')
-            return redirect('login')
+            return redirect('/')
+        else:
+            print('11111')
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
