@@ -25,7 +25,7 @@
         <div class="container">
         <a class="navbar-brand" href="#">大理一小 二（1）班 书法练习得分记录</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon">111</span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
@@ -38,15 +38,106 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">统计</a>
                 </li>
+               {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">个人中心</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">退出登录</a></li>
+                    </ul>
+                </li>
+            {% else %}
+        <li class="nav-item active">
+            <div style="display: flex;">
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登录</a>
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">注册</a>
+            </div>
+        </li>
+    {% endif %}
             </ul>
         </div>
     </div>
     </nav>
-
+<!-- 登录弹窗 -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">登录</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 在这里放置登录表单 -->
+          <form method="post" action="{% url 'login_v' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="username">用户名:</label>
+              <input type="text" class="form-control" id="username" name="username">
+            </div>
+            <div class="form-group">
+              <label for="password">密码:</label>
+              <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">登录</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+          </form>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <!-- 注册弹窗 -->
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signupModalLabel">注册</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 在这里放置注册表单 -->
+          <form method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">用户名:</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">邮箱:</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">密码:</label>
+                {{ form.password1 }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">确认密码:</label>
+                {{ form.password2 }}
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">注册</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </form>
+        
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
     <div class="container mt-4">
         <!-- 内容区域 -->
-        <h1>书法练习得分记录</h1>
-        <p>大理一小 二（1）班 </p>
+        <h1>精耕细作，字字珠玑</h1>
+        <p>不求快，但求好。 </p>
         <div class="container mt-4">
             {% block content %}
             {% endblock %}

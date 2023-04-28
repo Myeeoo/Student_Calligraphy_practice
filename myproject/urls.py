@@ -16,8 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from myapp.views import (
-    student_list, student_detail, score_list, score_detail, add_student, add_score
+    login_v,signup, student_list, student_detail, score_list, score_detail, add_student, add_score
 )
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +28,11 @@ urlpatterns = [
     path('score/<int:score_id>/', score_detail, name='score_detail'), # 更新 score_detail 路由
     path('add_student/', add_student, name='add_student'),
     path('add_score/', add_score, name='add_score'),
+
+    # 登录
+    path('login/', login_v, name='login_v'),
+    # 注销
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # 注册
+    path('signup/', signup, name='signup'),
 ]

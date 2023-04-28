@@ -1,6 +1,9 @@
 from copy import copy
 import datetime
+from imaplib import _Authenticator
+from multiprocessing import AuthenticationError
 from pyexpat.errors import messages
+from telnetlib import LOGOUT
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -8,7 +11,42 @@ from .models import Student, Score
 from .forms import ScoreForm
 from django.forms import modelformset_factory
 #import pdb; pdb.set_trace()
+from .forms import SignUpForm, LoginForm
+from django.contrib.auth import authenticate, login
 
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = True
+            user.save()
+            messages.success(request, '注册成功！')
+            return redirect('login')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
+
+def login_v(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/')
+            else:
+                form.add_error(None, '用户名或密码错误')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
+
+def logout_view(request):
+    LOGOUT(request)
+    messages.success(request, '成功退出！')
+    return redirect('home')
 
 def student_list(request):
     students = Student.objects.all()

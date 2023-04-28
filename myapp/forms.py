@@ -1,6 +1,19 @@
 from django import forms
 from .models import Score, Student
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
+class LoginForm(forms.Form):
+    username = forms.CharField(label='用户名', max_length=100)
+    password = forms.CharField(label='密码', widget=forms.PasswordInput)
+
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+                               
 class ScoreForm(forms.ModelForm):
     student = forms.ModelChoiceField(queryset=Student.objects.all(),
                                      initial=1,
