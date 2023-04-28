@@ -46,7 +46,7 @@ def login_v(request):
 def logout_view(request):
     LOGOUT(request)
     messages.success(request, '成功退出！')
-    return redirect('home')
+    return redirect('/')
 
 def student_list(request):
     students = Student.objects.all()
