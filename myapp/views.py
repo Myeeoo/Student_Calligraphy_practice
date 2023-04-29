@@ -2,7 +2,7 @@ from copy import copy
 import datetime
 from imaplib import _Authenticator
 from multiprocessing import AuthenticationError
-from pyexpat.errors import messages
+from pyexpat.errors import messages as msg
 from telnetlib import LOGOUT
 from django.forms import formset_factory
 from django.http import HttpResponse
@@ -10,9 +10,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Student, Score
 from .forms import ScoreForm
 from django.forms import modelformset_factory
-#import pdb; pdb.set_trace()
 from .forms import SignUpForm, LoginForm
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 def signup(request):
     if request.method == 'POST':
@@ -25,7 +25,11 @@ def signup(request):
             messages.success(request, '注册成功！')
             return redirect('/')
         else:
-            print('11111')
+            messages.error(request, '注册失败！')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label}: {error}")
+
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
