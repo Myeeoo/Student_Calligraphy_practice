@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from myapp.views import (
-    login_v,signup, student_list, student_detail, score_list, score_detail, add_student, add_score
+    checkin, login_v,signup, student_list, student_detail, score_list, score_detail, add_student, add_score
 )
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    path('checkin/', checkin, name='checkin'),
     path('admin/', admin.site.urls),
     path('', student_list, name='student_list'),
     path('student/<int:student_id>/', student_detail, name='student_detail'),

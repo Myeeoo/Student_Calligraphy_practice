@@ -13,6 +13,23 @@ from django.forms import modelformset_factory
 from .forms import SignUpForm, LoginForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Checkin
+from .forms import CheckinForm
+
+@login_required
+def checkin(request):
+    if request.method == 'POST':
+        form = CheckinForm(request.POST, request.FILES)
+        if form.is_valid():
+            checkin = form.save(commit=False)
+            checkin.student = request.user
+            checkin.save()
+            messages.success(request, '打卡成功！')
+            return redirect('/')
+    else:
+        form = CheckinForm()
+    return render(request, 'checkin.html', {'form': form})
 
 def signup(request):
     if request.method == 'POST':

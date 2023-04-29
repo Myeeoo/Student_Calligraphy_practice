@@ -1,7 +1,15 @@
 from django import forms
-from .models import Score, Student
+from .models import Score, Student, Checkin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+
+class CheckinForm(forms.ModelForm):
+    checkin_text = forms.CharField(max_length=200, required=True, widget=forms.Textarea(attrs={'rows': 3}))  # 一句话
+    checkin_image = forms.ImageField(required=True)  # 练习照片
+
+    class Meta:
+        model = Checkin
+        fields = ['student', 'checkin_text', 'checkin_image']
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='用户名', max_length=100)

@@ -16,6 +16,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 引入 Bootstrap 的 CSS 文件 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        </style>
+        
     <title>NewDream Of Dali</title>
     
 </head>
@@ -32,6 +45,9 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="/">首页</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'checkin' %}">打卡</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'student_list' %}">学生列表</a>
@@ -159,7 +175,7 @@
 
 </body>
 
-<footer class="bg-dark text-light py-3" >
+<footer class="bg-dark text-light py-3"  >
     <div class="container">
       <div class="row">
         <div class="col-md-6">
@@ -170,8 +186,6 @@
         <div class="col-md-6">
           <h3>开发相关</h3>
           <p>专门为大理一小二(1)班的同学们开发的书法练习打卡积分网站。</p>
-          <p>笔挥素纸醒心境，锲而不舍悟书经。</p>
-            <p>魂归光阴淬磨砺，字迹铭心传不灭。</p>
           <p>项目已开源<a class="nav-link" target="_blank" href="https://github.com/Myeeoo/Student_Calligraphy_practice.git">GitHub</a></p>
         </div>
         <ul>All Copy Right by 大理新梦圆 's eeoo</ul>
