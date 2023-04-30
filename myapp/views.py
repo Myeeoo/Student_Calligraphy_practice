@@ -18,6 +18,24 @@ from .models import Checkin
 from .forms import CheckinForm
 
 @login_required
+def user_center(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        student = Student.objects.create(user=request.user, name=name)
+        student.save()
+        return redirect('user_center')
+    else:
+        try:
+            user = request.user
+            students = user.student_set.all()
+            # student = request.user.student
+            student = request.user.student_set.first()
+        except Student.DoesNotExist:
+            student = None
+        context = {'student': student}
+        return render(request, 'user_center.html', context)
+    
+@login_required
 def checkin(request):
     if request.method == 'POST':
         form = CheckinForm(request.POST, request.FILES)

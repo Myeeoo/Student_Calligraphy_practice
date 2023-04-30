@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from myapp.views import (
-    checkin, login_v,signup, student_list, student_detail, score_list, score_detail, add_student, add_score
+    checkin, login_v,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, user_center
 )
 from django.contrib.auth import views as auth_views
 
@@ -29,7 +29,7 @@ urlpatterns = [
     path('score/<int:score_id>/', score_detail, name='score_detail'), # 更新 score_detail 路由
     path('add_student/', add_student, name='add_student'),
     path('add_score/', add_score, name='add_score'),
-
+    path('user_center/', user_center, name='user_center'),
     # 登录
     path('login/', login_v, name='login_v'),
     # 注销

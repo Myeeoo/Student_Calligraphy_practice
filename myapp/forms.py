@@ -4,8 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 class CheckinForm(forms.ModelForm):
-    checkin_text = forms.CharField(max_length=200, required=True, widget=forms.Textarea(attrs={'rows': 3}))  # 一句话
-    checkin_image = forms.ImageField(required=True)  # 练习照片
+    student = forms.ModelChoiceField(queryset=Student.objects.all(),
+                                     initial=1,
+                                     widget=forms.Select(attrs={'class': 'form-control'}),label='学生姓名')
+    checkin_text = forms.CharField(max_length=200, required=True, widget=forms.Textarea(attrs={'rows': 3,'class': 'form-control'}),label='打卡感言')  # 一句话
+    checkin_image = forms.ImageField(required=True,label='打卡感言')  # 练习照片
 
     class Meta:
         model = Checkin
@@ -34,7 +37,7 @@ class SignUpForm(UserCreationForm):
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
-        
+
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email).exists():

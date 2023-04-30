@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>用户中心</h1>
+      {% if student %}
+      <p>当前绑定的学生信息：</p>
+      <ul>
+        <li>姓名：{{ student.name }}</li>
+        <li>性别：{{ student.sex }}</li>
+        <li>年龄：{{ student.age }}</li>
+        <li>年级：{{ student.grade }}</li>
+      </ul>
+      {% else %}
+      <p>当前用户未绑定学生信息。</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
