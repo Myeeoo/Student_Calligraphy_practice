@@ -1,14 +1,36 @@
 from django import forms
-from .models import Score, Student, Checkin
+from .models import Score, Student, Checkin, StudentUser
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+class BindStudentForm(forms.ModelForm):
+    student = forms.ModelChoiceField(queryset=Student.objects.filter(user=None), label='学生姓名',widget=forms.Select(attrs={'class': 'form-control'}))
+    user = forms.ModelChoiceField(queryset=User.objects.none(), widget=forms.HiddenInput(), required=False)
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(BindStudentForm, self).__init__(*args, **kwargs)
+        if self.user:
+            self.fields['user'].queryset = User.objects.filter(id=self.user.id)
+            self.fields['user'].initial = self.user
+
+    class Meta:
+        model = StudentUser
+        fields = ['student','user']
+
+
 class CheckinForm(forms.ModelForm):
-    student = forms.ModelChoiceField(queryset=Student.objects.all(),
-                                     initial=1,
-                                     widget=forms.Select(attrs={'class': 'form-control'}),label='学生姓名')
     checkin_text = forms.CharField(max_length=200, required=True, widget=forms.Textarea(attrs={'rows': 3,'class': 'form-control'}),label='打卡感言')  # 一句话
     checkin_image = forms.ImageField(required=True,label='打卡感言')  # 练习照片
+
+    def __init__(self, user=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['student'].queryset = Student.objects.filter(user=user)
+        else:
+            self.fields['student'].queryset = Student.objects.none()
+
+
 
     class Meta:
         model = Checkin

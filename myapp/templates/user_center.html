@@ -1,21 +1,95 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+
+.card {
+  width: 220px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+  overflow: hidden;
+}
+
+
+.card-header {
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.card-body {
+  padding: 10px;
+}
+.unbind-btn {
+  float: right;
+  font-size: 14px;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+}
+</style>
+
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h1>用户中心</h1>
-      {% if student %}
+      
+      <h4>用户中心</h4>
       <p>当前绑定的学生信息：</p>
-      <ul>
-        <li>姓名：{{ student.name }}</li>
-        <li>性别：{{ student.sex }}</li>
-        <li>年龄：{{ student.age }}</li>
-        <li>年级：{{ student.grade }}</li>
-      </ul>
+      <div class="card-container">
+    {% for student in Student %}
+      {% if student %}
+      
+        <div class="card">
+          <div class="card-header">{{ student.name }}
+            <a href="{% url 'unbind_student' student.pk %}" class="btn btn-danger unbind-btn" >解绑</a>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li>性别：{{ student.sex }}</li>
+              <li>年龄：{{ student.age }}</li>
+              <li>年级：{{ student.grade }}</li>
+            </ul>
+          </div>
+        </div>
+      
+      
       {% else %}
       <p>当前用户未绑定学生信息。</p>
+
       {% endif %}
+    {% endfor %}
+  </div>
+      <hr>
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4>绑定学生</h4>
+            <div class="alert alert-warning" role="alert">
+              注意：绑定的学生将不出现在可绑定菜单中，请绑定错的家长及时解绑！
+            </div>
+            <form method="POST">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit" class="btn btn-primary">绑定</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
     </div>
   </div>
 </div>

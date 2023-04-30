@@ -8,7 +8,7 @@ from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Student, Score
-from .forms import ScoreForm
+from .forms import BindStudentForm, ScoreForm
 from django.forms import modelformset_factory
 from .forms import SignUpForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -18,27 +18,62 @@ from .models import Checkin
 from .forms import CheckinForm
 
 @login_required
+def unbind_student(request, student_id):
+    # 获取当前登录用户
+    user = request.user
+    
+    # 根据 student_id 获取学生实例
+    student = get_object_or_404(Student, pk=student_id)
+    
+    # 判断当前用户是否绑定了该学生
+    if user.student_set.filter(pk=student_id).exists():
+        
+        # 解绑学生和用户之间的 ManyToManyField 关系
+        user.student_set.remove(student)
+        
+        # 返回成功信息
+        messages.success(request, f"解绑 {student.name} 成功！")
+    else:
+        # 返回失败信息
+        messages.error(request, f"你没有绑定 {student.name}！")
+    
+    # 重定向回用户中心页面
+    return redirect('user_center')
+
+    
+    
+
+@login_required
 def user_center(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        student = Student.objects.create(user=request.user, name=name)
-        student.save()
+    All_students = Student.objects.all()#user.student_set.all()
+    mystudent = request.user.student_set.all()
+    print(mystudent)
+    form = BindStudentForm(request.POST or None, user=request.user)
+    if request.method == 'POST' and form.is_valid():
+        student = form.cleaned_data['student']
+        form.cleaned_data['user']= request.user
+        form.save()
+        messages.success(request, '绑定成功！')
         return redirect('user_center')
     else:
         try:
             user = request.user
-            students = user.student_set.all()
+            
             # student = request.user.student
             student = request.user.student_set.first()
         except Student.DoesNotExist:
             student = None
-        context = {'student': student}
+        context = {
+            'Student': mystudent,
+            'students':All_students,
+            'form': form
+            }
         return render(request, 'user_center.html', context)
     
 @login_required
 def checkin(request):
     if request.method == 'POST':
-        form = CheckinForm(request.POST, request.FILES)
+        form = CheckinForm(request.user, request.POST, request.FILES)
         if form.is_valid():
             checkin = form.save(commit=False)
             checkin.student = request.user
@@ -46,8 +81,14 @@ def checkin(request):
             messages.success(request, '打卡成功！')
             return redirect('/')
     else:
-        form = CheckinForm()
-    return render(request, 'checkin.html', {'form': form})
+        form = CheckinForm(request.user)
+        print(form)
+    
+    print(form.as_p()) # 打印表单HTML的渲染结果
+    # 获取当前用户的绑定学生列表
+    mystudent = request.user.studentuser_set.all().values_list('student', flat=True)
+    # 将 mystudent 传递到模板中
+    return render(request, 'checkin.html', {'form': form, 'mystudent': mystudent})
 
 def signup(request):
     if request.method == 'POST':

@@ -2,9 +2,24 @@
 
 {% block content %}
   <h2>练习打卡</h2>
-  <form method="post" enctype="multipart/form-data">
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="form-group">
+        <label for="{{ checkin_form.student.id_for_label }}">学生姓名</label>
+        <select id="{{ checkin_form.student.id_for_label }}" name="{{ checkin_form.student.name }}" class="form-control">
+            {% for student in mystudent %}
+                <option value="{{ student.pk }}">{{ student.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="{{ checkin_form.checkin_text.id_for_label }}">打卡感言</label>
+        <textarea id="{{ checkin_form.checkin_text.id_for_label }}" name="{{ checkin_form.checkin_text.name }}" class="form-control">{{ checkin_form.checkin_text.value }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="{{ checkin_form.checkin_image.id_for_label }}">练习照片</label>
+        <input id="{{ checkin_form.checkin_image.id_for_label }}" type="file" name="{{ checkin_form.checkin_image.name }}" class="form-control-file">
+    </div>
     <button type="submit" class="btn btn-primary">提交</button>
-  </form>
+</form>
 {% endblock %}
