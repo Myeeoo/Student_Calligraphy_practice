@@ -13,17 +13,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django import views
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from myapp.views import (
-    checkin, login_v,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, user_center
+    checkin, dashboard, login_v,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, user_center
 )
 from django.contrib.auth import views as auth_views
 
+
 urlpatterns = [
+    path('', dashboard, name='dashboard'),
     path('checkin/', checkin, name='checkin'),
     path('admin/', admin.site.urls),
-    path('', student_list, name='student_list'),
+    path('student', student_list, name='student_list'),
     path('student/<int:student_id>/', student_detail, name='student_detail'),
     path('score/', score_list, name='score_list'), # 更新 score_list 路由
     path('score/<int:score_id>/', score_detail, name='score_detail'), # 更新 score_detail 路由
@@ -38,4 +41,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     # 注册
     path('signup/', signup, name='signup'),
+
+    #使用Django-Plotly-Dash。
+    
+    path('django_plotly_dash/', include('django_plotly_dash.urls')),
 ]

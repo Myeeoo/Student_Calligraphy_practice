@@ -8,7 +8,8 @@ class Student(models.Model):
     age = models.IntegerField()
     grade = models.CharField(max_length=10)
     user = models.ManyToManyField(User,through='StudentUser')
-
+    last_checkin_date = models.DateField(null=True, blank=True)
+    
     def __str__(self):
         return self.name
 
@@ -30,6 +31,7 @@ class Checkin(models.Model):
     checkin_date = models.DateField(auto_now_add=True)
     checkin_text = models.CharField(max_length=200)
     checkin_image = models.ImageField(upload_to='checkin_images', blank=True, null=True)
+    score = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.student.username} - {self.checkin_date}"

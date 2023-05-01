@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load plotly_dash %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">Dashboard</div>
+
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              {% plotly_app name='leaderboard' %}
+            </div>
+            <div class="col-md-6">
+              <h4>学生人数</h4>
+              <p>{{ student_count }}</p>
+              <h4>今天打卡人数</h4>
+              <p>{{ checkin_count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

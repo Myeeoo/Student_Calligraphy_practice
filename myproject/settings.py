@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'myapp',
 ]
 
@@ -122,3 +123,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+PLOTLY_DASH = {
+    'routes': [
+        {
+            'app': 'myapp',  # 创建的Dash应用程序所在的app名称
+            'route': '/dash/',  # 访问Dash应用程序的路由路径
+        },
+    ],
+}
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
