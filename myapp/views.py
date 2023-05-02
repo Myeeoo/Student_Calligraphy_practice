@@ -16,6 +16,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Checkin
 from .forms import CheckinForm
+from django.contrib.auth import logout
 
 def dashboard(request):
     # 获取所有学生
@@ -187,7 +188,7 @@ def login_v(request):
     return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
-    LOGOUT(request)
+    logout(request)
     messages.success(request, '成功退出！')
     return redirect('/')
 
