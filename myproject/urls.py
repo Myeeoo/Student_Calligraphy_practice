@@ -24,7 +24,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     #path('', dashboard, name='dashboard'),
-    path('', checkin, name='checkin'),
+    path('', student_list, name='student_list'),
     path('checkin/', checkin, name='checkin'),
     path('admin/', admin.site.urls),
     path('student', student_list, name='student_list'),
