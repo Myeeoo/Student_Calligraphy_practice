@@ -43,13 +43,15 @@ def dashboard(request):
     # Get the total number of points
     total_points = Checkin.objects.aggregate(Sum('score'))['score__sum'] or 0
 
-    print(num_students)
+    # print(num_students)
+    checkins = Checkin.objects.all().order_by('-checkin_date')
 
     context = {
         'num_students': num_students,
         'num_checkins_today': num_checkins_today,
         'top_students': top_students,
         'total_points': total_points,
+        'checkins': checkins,
     }
 
     return render(request, 'dashboard.html', context)

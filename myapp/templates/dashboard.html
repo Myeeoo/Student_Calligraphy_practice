@@ -10,7 +10,41 @@
   <h2>积分排行榜</h2>
   <ol>
     {% for student in top_students %}
-      <li>{{ student.name }} ( 分)</li>
-    {% endfor %}
+  <li>{{ student.name }} ({{ student.total_score }} 分)</li>
+{% endfor %}
+
   </ol>
+  <h1>打卡记录</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>学生姓名</th>
+        <th>打卡日期</th>
+        <th>打卡感言</th>
+        <th>练习照片</th>
+        <th>得分</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for checkin in checkins %}
+        <tr>
+          <td>{{ checkin.student.name }}</td>
+          <td>{{ checkin.checkin_date }}</td>
+          <td>{{ checkin.checkin_text }}</td>
+          <td>
+            {% if checkin.checkin_image %}
+              <img src="{{ checkin.checkin_image.url }}" alt="{{ checkin.checkin_text }}" width="100">
+            {% else %}
+              无
+            {% endif %}
+          </td>
+          <td>{{ checkin.score }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">暂无打卡记录。</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
