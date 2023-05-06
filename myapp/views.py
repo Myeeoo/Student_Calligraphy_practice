@@ -17,45 +17,43 @@ from django.contrib.auth.decorators import login_required
 from .models import Checkin
 from .forms import CheckinForm
 from django.contrib.auth import logout
+from django.shortcuts import render
+from django.db.models import Count
+from django.utils import timezone
+from django.db.models import Sum
+from datetime import datetime
+from django.shortcuts import render
+from .models import Checkin
+
+def checkin_list(request):
+    checkins = Checkin.objects.all().order_by('-checkin_date')
+    return render(request, 'checkin_list.html', {'checkins': checkins})
 
 def dashboard(request):
-    # 获取所有学生
-    students = Student.objects.all()
+    # Get the number of students
+    num_students = Student.objects.count()
 
-    # 计算所有学生的总积分
-    student_points = {student.name: student.points for student in students}
+    # Get the number of students who have checked in today
+    num_checkins_today = Checkin.objects.filter(checkin_date=datetime.now().date()).count()
 
-    # 对积分进行排序，获取积分排行榜
-    sorted_points = {k: v for k, v in sorted(student_points.items(), key=lambda item: item[1], reverse=True)}
+    # Get the top 10 students with the most points
+    top_students = Student.objects.annotate(total_score=Sum('checkin__score')).order_by('-total_score')[:10]
 
-    # 计算学生人数
-    student_count = students.count()
 
-    # 获取今天的日期
-    today = datetime.now().date()
+    # Get the total number of points
+    total_points = Checkin.objects.aggregate(Sum('score'))['score__sum'] or 0
 
-    # 获取今天打卡的所有出席记录
-    attendances_today = Attendance.objects.filter(date__date=today)
+    print(num_students)
 
-    # 计算今天的出席人数
-    attendance_count_today = attendances_today.count()
+    context = {
+        'num_students': num_students,
+        'num_checkins_today': num_checkins_today,
+        'top_students': top_students,
+        'total_points': total_points,
+    }
 
-    # 绘制积分排行榜图表
-    fig1 = make_subplots(rows=1, cols=1)
-    fig1.add_trace(go.Bar(x=list(sorted_points.keys()), y=list(sorted_points.values()), marker_color='#FFA500'))
-    fig1.update_layout(title='Student Points Leaderboard')
+    return render(request, 'dashboard.html', context)
 
-    # 绘制学生人数和今天出席人数的子图
-    fig2 = make_subplots(rows=1, cols=2, specs=[[{'type': 'domain'}, {'type': 'domain'}]])
-
-    fig2.add_trace(go.Pie(values=[student_count, 0], labels=['Student Count', ''], name="Student Count"),
-                   1, 1)
-    fig2.add_trace(go.Pie(values=[attendance_count_today, student_count - attendance_count_today],
-                          labels=['Attendance Count Today', ''], name="Attendance Count Today"), 1, 2)
-    fig2.update_layout(title='Student and Attendance Count')
-
-    # 渲染模板并传递图表作为上下文变量
-    return render(request, 'dashboard.html', {'fig1': fig1, 'fig2': fig2})
 
 @login_required
 def unbind_student(request, student_id):
@@ -114,16 +112,31 @@ def user_center(request):
 def checkin(request):
     if request.method == 'POST':
         form = CheckinForm(request.user, request.POST, request.FILES)
+        print(form)
         if form.is_valid():
             checkin = form.save(commit=False)
-            checkin.student = request.user
+            checkin.checkin_date = datetime.now().date()  # 设置为今天的日期
+            checkin.student = form.cleaned_data['student']
+
+            # 检查是否已经打卡
+            if Checkin.objects.filter(student=checkin.student, checkin_date=checkin.checkin_date).exists():
+                messages.error(request, '今天已经打过卡了！')
+                return redirect('/')
+            
             checkin.score = calculate_score(checkin)
             checkin.save()
-            messages.success(request, '打卡成功！刻苦练习获得',checkin.score,'分')
+            messages.success(request, f'打卡成功！刻苦练习获得{checkin.score}分！')
             return redirect('/')
+        else:
+            messages.error(request, '打卡出错！')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label}: {error}")
     else:
         form = CheckinForm(request.user)
-        print(form)
+        
+        # print(form)
+
     
     # print(form.as_p()) # 打印表单HTML的渲染结果
     # 获取当前用户的绑定学生列表
@@ -134,6 +147,8 @@ def checkin(request):
     return render(request, 'checkin.html', {'form': form, 'mystudent': mystudent})
 
 def calculate_score(checkin):
+    print(checkin)
+    print(checkin.checkin_date)
     # 基础积分为 2 分
     score = 2
     # 如果打卡文字和图片都有，则额外加 2 分

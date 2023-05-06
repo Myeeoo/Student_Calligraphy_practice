@@ -17,15 +17,18 @@ from django import views
 from django.contrib import admin
 from django.urls import include, path
 from myapp.views import (
-    checkin, dashboard, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, user_center
+    checkin, checkin_list, dashboard, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, user_center
 )
 from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
-    #path('', dashboard, name='dashboard'),
-    path('', student_list, name='student_list'),
+    path('', dashboard, name='dashboard'),
+    # path('', student_list, name='student_list'),
     path('checkin/', checkin, name='checkin'),
+    path('checkin_list',checkin_list,name='checkin_list'),
     path('admin/', admin.site.urls),
     path('student', student_list, name='student_list'),
     path('student/<int:student_id>/', student_detail, name='student_detail'),
@@ -45,4 +48,4 @@ urlpatterns = [
 
     #使用Django-Plotly-Dash。
     path('django_plotly_dash/', include('django_plotly_dash.urls')),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
