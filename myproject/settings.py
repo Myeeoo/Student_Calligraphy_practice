@@ -137,5 +137,5 @@ PLOTLY_DASH = {
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-MEDIA_URL = '/checkin_images/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '/')
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'checkin_images')
