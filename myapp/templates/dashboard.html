@@ -33,7 +33,7 @@
           <td>{{ checkin.checkin_text }}</td>
           <td>
             {% if checkin.checkin_image %}
-              <img src="{{ checkin.checkin_image.url }}" alt="{{ checkin.checkin_text }}" width="100">
+              <img src="{{ MEDIA_URL }}{{ checkin.checkin_image.url }}" alt="{{ checkin.checkin_text }}" width="100">
             {% else %}
               无
             {% endif %}

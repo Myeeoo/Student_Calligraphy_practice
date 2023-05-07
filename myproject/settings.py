@@ -121,6 +121,11 @@ LOGIN_URL = '/login/'
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = '/checkin_images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'checkin_images')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -137,5 +142,4 @@ PLOTLY_DASH = {
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-MEDIA_URL = '/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'checkin_images/')
+
