@@ -122,7 +122,7 @@ def checkin(request):
 
             # 检查是否已经打卡
             if Checkin.objects.filter(student=checkin.student, checkin_date=checkin.checkin_date).exists():
-                messages.error(request, '今天已经打过卡了！')
+                messages.error(request, f'{checkin.student.name}今天已经打过卡了！')
                 return redirect('/')
             
             checkin.score = calculate_score(checkin)

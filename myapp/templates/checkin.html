@@ -6,11 +6,17 @@
     {% csrf_token %}
     <div class="form-group">
         <label for="{{ form.student.id_for_label }}">学生姓名</label>
+        {% if mystudent %}
         <select id="{{ form.student.id_for_label }}" name="{{ form.student.name }}" class="form-control">
             {% for student in mystudent %}
                 <option value="{{ student.pk }}">{{ student.name }}</option>
             {% endfor %}
         </select>
+        {% else %}
+              <div class="alert alert-warning" role="alert">
+                当前无可用的打卡学生，请到<a href="{% url 'user_center' %}">个人中心</a>绑定一个学生在账号下。
+              </div>
+        {% endif %}
     </div>
     <div class="form-group">
         <label for="{{ form.checkin_text.id_for_label }}">打卡感言</label>

@@ -170,11 +170,11 @@
         <!-- 内容区域 -->
         <h1>精耕细作，字字珠玑</h1>
         <p>不求快，但求好。 </p>
-        <div>
+        
           {% if messages %}
             <ul class="messages">
               {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                <li{% if message.tags %} class="alert alert-warning"{% endif %}>{{ message }}</li>
               {% endfor %}
             </ul>
           {% endif %}
