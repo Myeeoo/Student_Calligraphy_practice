@@ -21,7 +21,7 @@ from django.shortcuts import render
 from django.db.models import Count
 from django.utils import timezone
 from django.db.models import Sum
-from datetime import datetime
+from datetime import datetime , timedelta
 from django.shortcuts import render
 from .models import Checkin
 
@@ -30,11 +30,22 @@ def checkin_list(request):
     return render(request, 'checkin_list.html', {'checkins': checkins})
 
 def dashboard(request):
+    today = datetime.now().date()
+
+    # 本周的起始日期和结束日期
+    this_week_start = today - timedelta(days=today.weekday())
+    this_week_end = this_week_start + timedelta(days=6)
     # Get the number of students
     num_students = Student.objects.count()
 
+    # 本周打卡人数
+    num_checkins_this_week = Checkin.objects.filter(checkin_date__date__range=[this_week_start, this_week_end]).count()
+
+    # 总打卡人数
+    num_checkins_total = Checkin.objects.all().count()
+
     # Get the number of students who have checked in today
-    num_checkins_today = Checkin.objects.filter(checkin_date=datetime.now().date()).count()
+    num_checkins_today = Checkin.objects.filter(checkin_date__date=datetime.now().date()).count()
 
     # Get the top 10 students with the most points
     top_students = Student.objects.annotate(total_score=Sum('checkin__score')).order_by('-total_score')[:10]
@@ -47,6 +58,8 @@ def dashboard(request):
     checkins = Checkin.objects.all().order_by('-checkin_date')
 
     context = {
+        'num_checkins_this_week':num_checkins_this_week,
+        'num_checkins_total':num_checkins_total,
         'num_students': num_students,
         'num_checkins_today': num_checkins_today,
         'top_students': top_students,

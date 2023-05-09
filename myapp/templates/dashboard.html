@@ -12,52 +12,77 @@
   max-height: 100%;
   margin: auto;
 }
+.bg-primary {
+  background-color: #60a9f8; 
+  color: #fff;
+  }
+  .card {
+    border-radius: 10px;
+}
+
 </style>
 <div class="container my-5">
-  <h1 class="my-5">统计信息</h1>
   <div class="row">
     <div class="col-md-6">
-      <div class="card mb-5">
-        <div class="card-body">
-          <h2 class="card-title">学生总数</h2>
-          <h3 class="card-text">{{ num_students }}</h3>
-        </div>
-      </div>
+      <h2 class="my-5">积分排行榜</h2>
+      <ol class="list-group">
+        {% for student in top_students %}
+          <li class="list-group-item d-flex justify-content-between align-items-center {% if forloop.counter == 1 %}first{% elif forloop.counter == 2 %}second{% elif forloop.counter == 3 %}third{% endif %}">
+            <span>{% if forloop.counter <= 10 %}<span class="badge bg-primary me-2">{{ forloop.counter }}</span>{% endif %}{{ student.name }}</span>
+            <span class="badge bg-primary rounded-pill">{{ student.total_score }} 分</span>
+          </li>
+        {% endfor %}
+      </ol>
     </div>
+
     <div class="col-md-6">
-      <div class="card mb-5">
-        <div class="card-body">
-          <h2 class="card-title">今天打卡人数</h2>
-          <h3 class="card-text">{{ num_checkins_today }}</h3>
+      <h2 class="my-5">统计信息</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mb-5 text-center" >
+            <div class="card-header bg-primary">
+              <h2 class="card-title">学生总数</h2>
+            </div>
+            <div class="card-body">
+              <h3 class="card-text">{{ num_students }}</h3>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card mb-5">
-        <div class="card-body">
-          <h2 class="card-title">本周打卡人数</h2>
-          <h3 class="card-text">{{ num_checkins_today }}</h3>
+        <div class="col-md-6">
+          <div class="card mb-5 text-center" >
+            <div class="card-header bg-primary">
+              <h2 class="card-title">今天打卡人数</h2>
+            </div>
+            <div class="card-body">
+              <h3 class="card-text">{{ num_checkins_today }}</h3>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card mb-5">
-        <div class="card-body">
-          <h2 class="card-title">总打卡次数</h2>
-          <h3 class="card-text">{{ num_checkins_today }}</h3>
+        <div class="col-md-6">
+          <div class="card mb-5 text-center" >
+            <div class="card-header bg-primary">
+              <h2 class="card-title">本周打卡人数</h2>
+            </div>
+            <div class="card-body">
+              <h3 class="card-text">{{ num_checkins_this_week }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mb-5 text-center" >
+            <div class="card-header bg-primary">
+              <h2 class="card-title">总打卡次数</h2>
+            </div>
+            <div class="card-body">
+              <h3 class="card-text">{{ num_checkins_total }}</h3>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <h2 class="my-5">积分排行榜</h2>
-  <ol class="list-group">
-    {% for student in top_students %}
-      <li class="list-group-item">{{ student.name }} ({{ student.total_score }} 分)</li>
-    {% endfor %}
-  </ol>
-
-  <h1 class="my-5">打卡记录</h1>
+  
+  <h2 class="my-5">打卡记录</h2>
   <div class="card-deck">
     {% for checkin in checkins %}
       <div class="card mb-5">
@@ -69,6 +94,7 @@
           {% else %}
             <p class="card-text"><small class="text-muted">无照片</small></p>
           {% endif %}
+          <p>打卡时间:{{ checkin.checkin_date|date:"Y-m-d H:i:s" }}</p>
         </div>
         {% if checkin.checkin_image %}
           <img class="card-img-bottom" src="{{ MEDIA_URL }}{{ checkin.checkin_image.url }}" alt="{{ checkin.checkin_text }}">

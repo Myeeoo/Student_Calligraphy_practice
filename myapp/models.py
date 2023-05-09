@@ -28,7 +28,7 @@ class Score(models.Model):
 
 class Checkin(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    checkin_date = models.DateField(auto_now_add=True)
+    checkin_date = models.DateTimeField(auto_now_add=True)
     checkin_text = models.CharField(max_length=200)
     checkin_image = models.ImageField(upload_to='checkin_images', blank=True, null=True)
     score = models.IntegerField(default=0)
