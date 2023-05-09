@@ -4,3 +4,4 @@
 .myenv
 node_modules
 myenv/
+db.sqlite3
