@@ -134,13 +134,15 @@ def checkin(request):
             checkin.student = form.cleaned_data['student']
 
             # 检查是否已经打卡
-            if Checkin.objects.filter(student=checkin.student, checkin_date=checkin.checkin_date).exists():
+            existing_checkin = Checkin.objects.filter(student=checkin.student, checkin_date__date=checkin.checkin_date).first()
+
+            if existing_checkin:
                 messages.error(request, f'{checkin.student.name}今天已经打过卡了！')
                 return redirect('/')
             
             checkin.score = calculate_score(checkin)
             checkin.save()
-            messages.success(request, f'打卡成功！刻苦练习获得{checkin.score}分！')
+            messages.success(request, f'{checkin.student.name}打卡成功！刻苦练习获得{checkin.score}积分！')
             return redirect('/')
         else:
             messages.error(request, '打卡出错！')
@@ -164,19 +166,19 @@ def checkin(request):
 def calculate_score(checkin):
     print(checkin)
     print(checkin.checkin_date)
-    # 基础积分为 2 分
-    score = 2
+    # 基础积分为 3 分
+    score = 3
     # 如果打卡文字和图片都有，则额外加 2 分
     if checkin.checkin_text and checkin.checkin_image:
-        score += 3
-    # 如果是周末，则额外加 5 分
+        score += 2
+    # 如果是周末，则额外加 2 分
     if checkin.checkin_date.weekday() >= 5:
-        score += 1
-    # 如果是连续打卡，则额外加 5 分
+        score += 2
+    # 如果是连续打卡，则额外加 3 分
     student = checkin.student
     if student.last_checkin_date and \
             (checkin.checkin_date - student.last_checkin_date).days == 1:
-        score += 5
+        score += 3
     student.last_checkin_date = checkin.checkin_date
     student.save()
     return score

@@ -20,7 +20,7 @@ class BindStudentForm(forms.ModelForm):
 
 
 class CheckinForm(forms.ModelForm):
-    checkin_text = forms.CharField(max_length=200, required=True, widget=forms.Textarea(attrs={'rows': 3,'class': 'form-control'}),label='打卡感言')  # 一句话
+    checkin_text = forms.CharField(initial="成长可见，未来可期！",max_length=200, required=True, widget=forms.Textarea(attrs={'rows': 3,'class': 'form-control'}),label='打卡感言')  # 一句话
     checkin_image = forms.ImageField(required=True,label='打卡感言')  # 练习照片
 
     def __init__(self, user=None, *args, **kwargs):
