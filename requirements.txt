@@ -7,7 +7,7 @@ dash-bootstrap-components==1.4.1
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
-Django==4.2
+Django==4.2.1
 django-chartit==0.2.9
 django-plotly-dash==2.2.0
 dpd-components==0.1.0
