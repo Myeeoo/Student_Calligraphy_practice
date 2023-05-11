@@ -1,30 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>添加学生</h1>
-<form method="post">
-  {% csrf_token %}
-  <!-- <label for="student_id">学号:</label> -->
-  <!-- <input type="text" name="student_id" required><br> -->
-  <label for="name">姓名:</label>
-  <input type="text" name="name" required><br>
-  <label for="sex">性别:</label>
-  <select name="sex" id="sex">
-    <option value="男生">男生</option>
-    <option value="女生">女生</option>
-</select><br>
-  <label for="age">年龄:</label>
-  <input type="number" name="age" required><br>
-  <label for="grade">年级:</label>
-  <select name="grade" id="grade">
-    <option value="一年级">一年级</option>
-    <option value="二年级">二年级</option>
-    <option value="三年级">三年级</option>
-    <option value="四年级">四年级</option>
-    <option value="五年级">五年级</option>
-    <option value="六年级">六年级</option>
-</select><br>
-  <input type="submit" value="添加学生">
-</form>
-<button onclick="location.href='{% url 'student_list' %}'">返回学生列表</button>
+<div class="card mx-auto" style="width: 400px;">
+  <div class="card-body">
+    <h1 class="card-title text-center">添加学生</h1>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="name">姓名:</label>
+        <input type="text" class="form-control" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="sex">性别:</label>
+        <select class="form-control" name="sex" id="sex">
+          <option value="男生">男生</option>
+          <option value="女生">女生</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="age">年龄:</label>
+        <input type="number" class="form-control" name="age" required>
+      </div>
+      <div class="form-group">
+        <label for="classes">班级:</label>
+        <select class="form-control" name="classes" id="classes">
+          {% for class_obj in classes %}
+          <option value="{{ class_obj.id }}">{{ class_obj.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">添加学生</button>
+    </form>
+    
+  </div>
+  <button class="btn btn-secondary mt-2" onclick="location.href='{% url 'student_list' %}'">返回学生列表</button>
+</div>
+
 {% endblock %}

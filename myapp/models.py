@@ -1,12 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+class Classes(models.Model):
+    name = models.CharField(max_length=20,default='NewDream')
+    # 添加其他班级信息字段
+
+    def __str__(self):
+        return self.name
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     sex = models.CharField(max_length=10)
     age = models.IntegerField()
-    grade = models.CharField(max_length=10)
+    Classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
     user = models.ManyToManyField(User,through='StudentUser')
     last_checkin_date = models.DateField(null=True, blank=True)
     
@@ -35,3 +42,4 @@ class Checkin(models.Model):
 
     def __str__(self):
         return f"{self.student.name} - {self.checkin_date}"
+

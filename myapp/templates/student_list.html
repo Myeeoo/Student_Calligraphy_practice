@@ -16,12 +16,12 @@
             <td>{{ student.name }}</td>
             <td>{{ student.sex }}</td>
             <td>{{ student.age }}</td>
-            <td>{{ student.grade }}</td>
+            <td>{{ student.Classes}}</td>
             
         </tr>
         {% empty %}
         <tr>
-            <td colspan="6">暂无学生信息</td>
+            <td colspan="6">该班级暂无学生信息</td>
         </tr>
         {% endfor %}
     </table>

@@ -14,7 +14,7 @@ from .forms import SignUpForm, LoginForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Checkin
+from .models import Checkin,Classes
 from .forms import CheckinForm
 from django.contrib.auth import logout
 from django.shortcuts import render
@@ -42,7 +42,8 @@ def dashboard(request):
 
     # 总分排行榜
     Score_top_students = Score.objects.values('student__name').annotate(total_score=Sum('score')).order_by('-total_score')[:10]
-
+    
+    Score_topOne = Score.objects.values('student__name').annotate(total_score=Sum('score')).order_by('-total_score').first()
     # 本周最高分
     Score_this_week_high_score = Score.objects.filter(date__range=[this_week_start, this_week_end]).order_by('-score').first()
 
@@ -71,6 +72,7 @@ def dashboard(request):
     checkins = Checkin.objects.all().order_by('-checkin_date')
 
     context = {
+        'Score_topOne':Score_topOne,
         'Score_num_students':Score_num_students,
         'Score_top_students':Score_top_students,
         'Score_this_week_high_score':Score_this_week_high_score,
@@ -109,9 +111,6 @@ def unbind_student(request, student_id):
     
     # 重定向回用户中心页面
     return redirect('user_center')
-
-    
-    
 
 @login_required
 def user_center(request):
@@ -245,12 +244,10 @@ def student_list(request):
     students = Student.objects.all()
     return render(request, 'student_list.html', {'students': students})
 
-
 def student_detail(request, student_id):
     student = get_object_or_404(Student, id=student_id)
     scores = Score.objects.filter(student=student)
     return render(request, 'student_detail.html', {'student': student, 'scores': scores})
-
 
 def score_list(request):
     # 查询 Score 模型并按日期分组
@@ -262,11 +259,9 @@ def score_list(request):
         score_list[date] = Score.objects.filter(date=date)
     return render(request, 'score_list.html', {'scores': score_list})
 
-
 def score_detail(request, score_id):
     score = get_object_or_404(Score, id=score_id)
     return render(request, 'score_detail.html', {'score': score})
-
 
 def add_student(request):
     # 处理添加学生信息的逻辑
@@ -285,58 +280,12 @@ def add_student(request):
         student.save()
         # 重定向到学生列表页面
         return redirect('student_list')
-
-    return render(request, 'add_student.html')
-# def add_score(request):
-    ScoreFormSet = modelformset_factory(
-        Score, form=ScoreForm, extra=0, fields=['student', 'score', 'add_score', 'date'])
-    if request.method == 'POST':
-        formset = ScoreFormSet(request.POST)
-        if formset.is_valid():
-            # 处理表单数据
-            for form in formset:
-                if form.is_valid():
-                    student_pk = form.cleaned_data['student'].pk
-                    score = request.POST.get('%s_%d' % (form.fields['score'].widget.attrs['name'], student_pk))
-                    add_score = request.POST.get('%s_%d' % (form.fields['add_score'].widget.attrs['name'], student_pk))
-                    date = request.POST.get('%s_%d' % (form.fields['date'].widget.attrs['name'], student_pk))
-                    score_obj = form.save(commit=False)
-                    score_obj.score = score
-                    score_obj.add_score = add_score
-                    score_obj.date = date
-                    score_obj.save()
-            messages.success(request, '分数保存成功！')
-            return redirect('list_score')
-        else:
-            # 表单验证失败，返回带有错误信息的表单页面
-            queryset = Student.objects.all().order_by('student_id')
-            students_forms = []
-            for form, student in zip(formset, queryset):
-                students_forms.append((student, form))
-            context = {
-                'formset': formset,
-                'students_forms': students_forms,
-            }
-             # 添加错误信息到上下文中
-            errors_forms = []
-            errors = formset.errors
-            for error, field_errors in zip(errors, form.errors.values):
-                errors_forms.append((error, field_errors))
-
-            if errors:
-                context['errors'] = errors_forms
-            return render(request, 'add_score.html', context)
-    else:
-        queryset = Student.objects.all().order_by('student_id')
-        formset = ScoreFormSet(queryset=queryset)
-        students_forms = []
-        for form, student in zip(formset, queryset):
-            students_forms.append((student, form))
-        context = {
-            'formset': formset,
-            'students_forms': students_forms,
-        }
-        return render(request, 'add_score.html', context)
+    classes = Classes.objects.all()
+    print(classes)
+    context = {
+        'classes': classes
+    }
+    return render(request, 'add_student.html',context)
 
    #原
 def add_score(request):
@@ -412,81 +361,3 @@ def add_score(request):
         'students_forms': zip(students, forms)
     }
     return render(request, 'add_score.html', context)
-
-# def add_score(request):
-#     ScoreFormSet = modelformset_factory(Score, form=ScoreForm, extra=0, fields=['student', 'score', 'add_score'])
-#     queryset = Student.objects.all()
-#     formset = ScoreFormSet(queryset=queryset)
-    
-#     if request.method == 'POST':
-#         formset = ScoreFormSet(request.POST)
-#         if formset.is_valid():
-#             instances = formset.save(commit=False)
-#             for instance in instances:
-#                 student_id = instance.student_id
-#                 student = Student.objects.get(pk=student_id)
-#                 instance.student = student
-#                 instance.save()
-#             return redirect('score_list')
-#         else:
-#             print("数据验证不合法！")
-#     else:
-#         queryset = Student.objects.all()
-#         formset = ScoreFormSet(queryset=queryset)
-        
-#     context = {
-#         'formset': formset
-#     }
-#     return render(request, 'add_scorenew.html', context)
-
-def add_score2(request):
-    # 获取所有学生列表
-    students = Student.objects.all()
-
-    # 构造所有学生对应的成绩表单
-    ScoreFormSet = modelformset_factory(Score, form=ScoreForm, extra=0)
-    scores = Score.objects.filter(student__in=students)
-    formset = ScoreFormSet(queryset=scores)
-
-# 手动指定每个表单的 queryset
-    for form, student in zip(formset.forms, students):
-        form.fields['student'].queryset = Student.objects.filter(pk=student.pk)
-        
-    # 将所有学生和对应的成绩表单组合成一个二元组，并传递给模板
-    students_forms = zip(students, formset.forms)
-    context = {'students_forms': students_forms}
-
-    if request.method == 'POST':
-        formset = ScoreFormSet(request.POST)#[ScoreFormSet(request.POST) for student in students] #ScoreFormSet(request.POST)
-        print(formset)
-        #if all(form.is_valid() for form in forms):
-        for form in formset:
-            print(form)
-            print("1")
-        if all(form.is_valid() for form in formset):
-            formset.save()
-            print('成绩更新成功！')
-            return redirect('score_list')
-        else:
-            for field_name, error_messages in form.errors.items():
-                print(field_name)
-                for error_message in error_messages:
-                    print(error_message)
-            print("数据验证不合法！")
-    
-    else:
-        forms = []
-        for student in students:
-            form_data = {
-                'student': student,
-                'score': 80,
-                'add_score': 0,
-                'date': datetime.date.today(),
-            }
-            form = ScoreForm(data=form_data)
-            forms.append(form)
-            
-    context = {
-        'students_forms': zip(students, forms)
-    }
-    return render(request, 'add_score.html', context=context)
