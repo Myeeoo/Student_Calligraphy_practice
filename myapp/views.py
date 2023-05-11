@@ -35,6 +35,19 @@ def dashboard(request):
     # 本周的起始日期和结束日期
     this_week_start = today - timedelta(days=today.weekday())
     this_week_end = this_week_start + timedelta(days=6)
+
+
+    # 统计学生总数
+    Score_num_students = Student.objects.count()
+
+    # 总分排行榜
+    Score_top_students = Score.objects.values('student__name').annotate(total_score=Sum('score')).order_by('-total_score')[:10]
+
+    # 本周最高分
+    Score_this_week_high_score = Score.objects.filter(date__range=[this_week_start, this_week_end]).order_by('-score').first()
+
+    # 本周最高加分
+    Score_this_week_high_add_score = Score.objects.filter(date__range=[this_week_start, this_week_end]).order_by('-add_score').first()
     # Get the number of students
     num_students = Student.objects.count()
 
@@ -58,6 +71,10 @@ def dashboard(request):
     checkins = Checkin.objects.all().order_by('-checkin_date')
 
     context = {
+        'Score_num_students':Score_num_students,
+        'Score_top_students':Score_top_students,
+        'Score_this_week_high_score':Score_this_week_high_score,
+        'Score_this_week_high_add_score':Score_this_week_high_add_score,
         'num_checkins_this_week':num_checkins_this_week,
         'num_checkins_total':num_checkins_total,
         'num_students': num_students,
