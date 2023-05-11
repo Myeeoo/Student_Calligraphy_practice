@@ -7,6 +7,8 @@ from telnetlib import LOGOUT
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+
+from myapp.templatetags.custom_filters import time_since_checkin
 from .models import Student, Score
 from .forms import BindStudentForm, ScoreForm
 from django.forms import modelformset_factory
@@ -24,6 +26,42 @@ from django.db.models import Sum
 from datetime import datetime , timedelta
 from django.shortcuts import render
 from .models import Checkin
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+
+def load_more_checkins(request):
+    checkins = Checkin.objects.all().order_by('-checkin_date')  # 获取所有的打卡记录，按照日期倒序排序
+    paginator = Paginator(checkins, 5)  # 每页显示5条记录
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # 检查是否还有更多记录
+    has_next_page = page_obj.has_next()
+    
+    # 将页面对象的记录渲染为JSON格式
+    checkins_data = []
+    for checkin in page_obj:
+        # 获取图片的URL
+        checkin_image = checkin.checkin_image.url if checkin.checkin_image else ''
+        
+        # 构建打卡记录的JSON数据
+        checkin_data = {
+            'name': checkin.student.name,
+            'class': checkin.student.Classes.name,
+            'checkin_date': checkin.checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'checkin_text': checkin.checkin_text,
+            'checkin_image_url': checkin_image,
+            # 其他字段...
+        }
+        checkins_data.append(checkin_data)
+    
+    response_data = {
+        'checkins': checkins_data,
+        'has_next_page': has_next_page,
+    }
+    
+    return JsonResponse(response_data, safe=False)
+
 
 def checkin_list(request):
     checkins = Checkin.objects.all().order_by('-checkin_date')
@@ -69,7 +107,7 @@ def dashboard(request):
     total_points = Checkin.objects.aggregate(Sum('score'))['score__sum'] or 0
 
     # print(num_students)
-    checkins = Checkin.objects.all().order_by('-checkin_date')
+    checkins = Checkin.objects.all().order_by('-checkin_date')[:5]
 
     context = {
         'Score_topOne':Score_topOne,
