@@ -37,7 +37,7 @@
             <div class="col-md-6">
               <h2 class="my-5">得分排行榜</h2>
               <ol class="list-group">
-                {% for student in top_students %}
+                {% for student in Score_top_students %}
                   <li class="list-group-item d-flex justify-content-between align-items-center {% if forloop.counter == 1 %}first{% elif forloop.counter == 2 %}second{% elif forloop.counter == 3 %}third{% endif %}">
                     <span>{% if forloop.counter <= 10 %}<span class="badge bg-primary me-2">{{ forloop.counter }}</span>{% endif %}{{ student.name }}</span>
                     <span class="badge bg-primary rounded-pill">{{ student.total_score }} 分</span>
@@ -55,7 +55,7 @@
                       <h2 class="card-title">学生总数</h2>
                     </div>
                     <div class="card-body">
-                      <h3 class="card-text">{{ num_students }}</h3>
+                      <h3 class="card-text">{{ Score_num_students }}</h3>
                     </div>
                   </div>
                 </div>
@@ -72,20 +72,20 @@
                 <div class="col-md-6">
                   <div class="card mb-5 text-center" >
                     <div class="card-header bg-primary">
-                      <h2 class="card-title">本周打卡人数</h2>
+                      <h2 class="card-title">本周最高分</h2>
                     </div>
                     <div class="card-body">
-                      <h3 class="card-text">{{ num_checkins_this_week }}</h3>
+                      <h3 class="card-text">{{ Score_this_week_high_score }}</h3>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="card mb-5 text-center" >
                     <div class="card-header bg-primary">
-                      <h2 class="card-title">总打卡次数</h2>
+                      <h2 class="card-title">本周最高加分</h2>
                     </div>
                     <div class="card-body">
-                      <h3 class="card-text">{{ num_checkins_total }}</h3>
+                      <h3 class="card-text">{{ Score_this_week_high_add_score }}</h3>
                     </div>
                   </div>
                 </div>
