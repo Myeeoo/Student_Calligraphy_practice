@@ -311,16 +311,16 @@ function createCheckinElement(checkinData) {
   
   cardBody.append(cardText);
   
-  if (checkinData.checkin_image_url) {
-    var cardImage = $('<img>').addClass('card-img-bottom').attr('src', checkinData.checkin_image_url).attr('alt', checkinData.checkin_text);
-    card.append(cardImage);
-  }
+  
   
   var modalHeader = $('<div>').addClass('modal-header');
   var modalHeaderLeft = $('<div>');
   var checkinDateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(checkinData.checkin_date);
   var scoreBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('获得' + checkinData.score + '积分');
-  
+  if (checkinData.checkin_image_url) {
+    var cardImage = $('<img>').addClass('card-img-bottom').attr('src', checkinData.checkin_image_url).attr('alt', checkinData.checkin_text);
+    card.append(cardImage);
+  }
   modalHeaderLeft.append(checkinDateBadge, scoreBadge);
   
   var modalHeaderRight = $('<div>').text('点赞功能敬请期待');
