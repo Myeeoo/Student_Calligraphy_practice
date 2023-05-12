@@ -1,0 +1,18 @@
+.
+├── bootstrap.bundle.js
+├── bootstrap.bundle.js.map
+├── bootstrap.bundle.min.js
+├── bootstrap.bundle.min.js.map
+├── bootstrap.esm.js
+├── bootstrap.esm.js.map
+├── bootstrap.esm.min.js
+├── bootstrap.esm.min.js.map
+├── bootstrap.js
+├── bootstrap.js.map
+├── bootstrap.min.js
+├── bootstrap.min.js.map
+├── directory_structure.txt
+├── jquery-3.6.4.min.js
+└── moment-timezone-with-data-1970-2030.js
+
+1 directory, 15 files

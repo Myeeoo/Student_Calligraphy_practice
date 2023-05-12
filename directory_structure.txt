@@ -1,0 +1,53 @@
+.
+├── README.md
+├── checkin_images
+│   ├── checkin_images
+│   ├── 截屏2023-04-21_00.18.19.png
+│   ├── 截屏2023-04-21_00.18.19_4GtmZQj.png
+│   ├── 截屏2023-04-21_00.18.19_ElKIeHD.png
+│   ├── 截屏2023-04-21_00.18.19_LKkFYnB.png
+│   ├── 截屏2023-04-21_00.18.19_ixkoMpv.png
+│   ├── 截屏2023-04-27_09.45.30.png
+│   ├── 截屏2023-05-02_10.29.39.png
+│   └── 截屏2023-05-02_10.29.39_ftVI6Or.png
+├── db.sqlite3
+├── directory_structure.txt
+├── manage.py
+├── myapp
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── migrations
+│   ├── models.py
+│   ├── templates
+│   ├── templatetags
+│   ├── tests.py
+│   └── views.py
+├── myapp_score.txt
+├── myapp_student.txt
+├── myproject
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── node_modules
+│   ├── @popperjs
+│   └── bootstrap
+├── package-lock.json
+├── package.json
+├── requirements.txt
+├── static
+│   ├── css
+│   ├── favicon.ico
+│   └── js
+├── staticfiles
+│   └── admin
+└── student_manager
+    ├── manage.py
+    └── student_manager
+
+20 directories, 31 files

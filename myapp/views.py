@@ -30,20 +30,33 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 
 def load_more_checkins(request):
-    checkins = Checkin.objects.all().order_by('-checkin_date')  # 获取所有的打卡记录，按照日期倒序排序
-    paginator = Paginator(checkins, 5)  # 每页显示5条记录
+    per_page = 5  # 每页显示的记录数
+    checkin_count = Checkin.objects.count()  # 打卡记录的总数
     page_number = request.GET.get('page')
+    page_number = int(page_number) if page_number else 1  # 默认为第一页
+
+    # 计算起始和结束位置
+    start_index = (page_number - 1) * per_page
+    end_index = start_index + per_page
+
+    # 获取对应页码的打卡记录
+    checkins = Checkin.objects.all().order_by('-checkin_date')[start_index:end_index]
+
+    # 创建分页器对象
+    paginator = Paginator(checkins, per_page)
+
+    # 获取当前页的页面对象
     page_obj = paginator.get_page(page_number)
-    
+
     # 检查是否还有更多记录
     has_next_page = page_obj.has_next()
-    
+
     # 将页面对象的记录渲染为JSON格式
     checkins_data = []
     for checkin in page_obj:
         # 获取图片的URL
         checkin_image = checkin.checkin_image.url if checkin.checkin_image else ''
-        
+
         # 构建打卡记录的JSON数据
         checkin_data = {
             'name': checkin.student.name,
@@ -54,13 +67,14 @@ def load_more_checkins(request):
             # 其他字段...
         }
         checkins_data.append(checkin_data)
-    
+
     response_data = {
         'checkins': checkins_data,
         'has_next_page': has_next_page,
     }
-    
+
     return JsonResponse(response_data, safe=False)
+
 
 
 def checkin_list(request):
