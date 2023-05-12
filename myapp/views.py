@@ -41,7 +41,7 @@ def load_more_checkins(request):
         end_index = per_page
 
     checkins = Checkin.objects.all().order_by('-checkin_date')[start_index:end_index]
-    
+    print(checkins)
     # 将打卡记录数据转化为 JSON 格式
     checkins_data = []
     for checkin in checkins:
@@ -54,7 +54,7 @@ def load_more_checkins(request):
             # 其他字段...
         }
         checkins_data.append(checkin_data)
-
+    print(checkins_data)
     response_data = {
         'checkins': checkins_data,
         'has_next_page': len(checkins) == per_page,

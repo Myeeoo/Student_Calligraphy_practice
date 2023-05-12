@@ -229,10 +229,11 @@ function dashboard(request) {
     $.ajax({
       url: loadMoreUrl,
       type: 'GET',
-      success: function(data) {
+      success: function(response_data) {
+        var checkins_data = response_data.checkins;
         // 遍历打卡记录数据并渲染到页面上
-        for (var i = 0; i < data.length; i++) {
-          var checkinData = data[i];
+        for (var i = 0; i < checkins_data.length; i++) {
+          var checkinData = checkins_data[i];
           var checkinElement = createCheckinElement(checkinData);
 
           // 将打卡记录元素追加到容器中
