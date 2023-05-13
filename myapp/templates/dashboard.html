@@ -232,7 +232,7 @@ function dashboard(request) {
       url: loadMoreUrl,
       type: 'GET',
       success: function(response_data) {
-        alert(loadMoreUrl);
+        // alert(loadMoreUrl);
         var checkins_data = response_data.checkins;
         // 遍历打卡记录数据并渲染到页面上
         for (var i = 0; i < checkins_data.length; i++) {
@@ -244,7 +244,7 @@ function dashboard(request) {
         }
         currentPageNumber++;
         loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber; 
-        alert("currentPageNumber:"+currentPageNumber)
+        // alert("currentPageNumber:"+currentPageNumber)
         // 检查是否还有更多记录
         if (!data.has_next_page) {
           // 隐藏加载更多按钮
