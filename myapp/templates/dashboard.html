@@ -233,6 +233,19 @@
 <script>
 $(document).ready(function() {
   dashboard()
+  // 获取按钮和<div>元素
+const button = document.getElementById('load-more-button');
+const div = document.getElementById('DI');
+
+// 添加点击事件监听器
+button.addEventListener('click', function() {
+  // 点击按钮时，隐藏按钮并显示<div>
+  button.style.display = 'none';
+  div.style.display = 'block';
+});
+
+// 默认情况下，隐藏<div>
+div.style.display = 'none';
 });
 
 function dashboard(request) {
@@ -328,7 +341,7 @@ function createCheckinElement(checkinData) {
   
   modalHeaderLeft.append(dateBadge,checkinDateBadge, scoreBadge);
   
-  var modalHeaderRight = $('<div>').text('点赞功能开发中...');
+  var modalHeaderRight = $('<div>').text('点赞功能奋力开发中...');
   
   modalHeader.append(modalHeaderLeft, modalHeaderRight);
   
