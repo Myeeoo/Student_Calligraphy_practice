@@ -44,10 +44,38 @@
             -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
         }
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            text-align: center;
+          }
+
+
         </style>
         
     <title>练字打卡-NewDream</title>
-    
+    <script>
+      function showPopup(message) {
+        var popup = $("#popup");
+
+        // 修改提示窗体的文字
+        popup.text(message);
+
+        // 显示提示窗体
+        popup.fadeIn();
+
+        // 延迟指定的时间后隐藏提示窗体
+        popup.delay(3000).fadeOut();
+      }
+    </script>
 </head>
 <body>
     
@@ -94,6 +122,7 @@
         </div>
     </div>
     </nav>
+    <div class="modal-dialog modal-sm" id="popup" style="display: none;">这是一个提示窗体</div>
 <!-- 登录弹窗 -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -181,6 +210,8 @@
             </ul>
           {% endif %}
         </div>
+        
+
         <div class="container mt-4">
           
             {% block content %}

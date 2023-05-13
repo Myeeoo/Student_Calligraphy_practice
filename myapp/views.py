@@ -56,10 +56,12 @@ def load_more_checkins(request):
             # 其他字段...
         }
         checkins_data.append(checkin_data)
-    print(checkins_data)
+    has_next_page = len(checkins) == per_page
+    # print('len(checkins):',len(checkins))
+    # print(has_next_page)
     response_data = {
         'checkins': checkins_data,
-        'has_next_page': len(checkins) == per_page,
+        'has_next_page': has_next_page,
     }
 
     return JsonResponse(response_data)

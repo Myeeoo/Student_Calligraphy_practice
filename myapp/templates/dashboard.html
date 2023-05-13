@@ -19,7 +19,21 @@
   }
   .card {
     border-radius: 10px;
+}#DI {
+  text-align: center;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }
+
+#DI a {
+  color: #333333;
+  text-decoration: none;
+}
+
+
+
 
 </style>
 <ul class="nav nav-tabs">
@@ -188,7 +202,8 @@
       </div>
     {% endfor %} -->
   </div>
-  <button id="load-more-button">加载更多</button>
+  <button class="btn btn-primary " id="load-more-button">加载更多</button>
+  <div id='DI'><a>已经到底了！</a></div>
   <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -217,7 +232,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-  
   dashboard()
 });
 
@@ -225,6 +239,8 @@ function dashboard(request) {
   var loadMoreButton = $('#load-more-button');
   var checkinContainer = $('#checkin-container');
   var currentPageNumber = 1;  // 假设初始页码为1
+  // 获取提示信息元素
+  var di = document.getElementById('DI'); 
   var loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber;  // 替换为您的URL
   
   loadMoreButton.click(function() {
@@ -233,6 +249,7 @@ function dashboard(request) {
       type: 'GET',
       success: function(response_data) {
         // alert(loadMoreUrl);
+        
         var checkins_data = response_data.checkins;
         // 遍历打卡记录数据并渲染到页面上
         for (var i = 0; i < checkins_data.length; i++) {
@@ -245,15 +262,17 @@ function dashboard(request) {
         currentPageNumber++;
         loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber; 
         // alert("currentPageNumber:"+currentPageNumber)
+        // showPopup("data.has_next_page:"+response_data.has_next_page)
         // 检查是否还有更多记录
-        if (!data.has_next_page) {
+        if (!response_data.has_next_page) {
           // 隐藏加载更多按钮
           loadMoreButton.hide();
+          di.style.display = 'block';
         }
       },
       error: function(xhr, status, error) {
         var errorMessage = '打卡数据加载失败，请重试！\n' + '状态码：' + xhr.status + '\n错误信息:' + error;
-        alert(errorMessage);
+        showPopup(errorMessage);
       }
     });
   });
@@ -303,13 +322,13 @@ function createCheckinElement(checkinData) {
   }
   var modalHeader = $('<div>').addClass('modal-header');
   var modalHeaderLeft = $('<div>');
-    var dateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('打卡时间: ' + moment(formattedDate,'YYYY-MM-DD HH:mm:ss').fromNow());
+  var dateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('打卡时间: ' + moment(formattedDate,'YYYY-MM-DD HH:mm:ss').fromNow());
   var checkinDateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(checkinData.checkin_date);
   var scoreBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('获得' + checkinData.score + '积分');
   
   modalHeaderLeft.append(dateBadge,checkinDateBadge, scoreBadge);
   
-  var modalHeaderRight = $('<div>').text('点赞功能敬请期待');
+  var modalHeaderRight = $('<div>').text('点赞功能开发中...');
   
   modalHeader.append(modalHeaderLeft, modalHeaderRight);
   
