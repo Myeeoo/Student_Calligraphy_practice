@@ -28,11 +28,12 @@ from django.shortcuts import render
 from .models import Checkin
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.views.decorators.cache import never_cache
 
+@never_cache
 def load_more_checkins(request):
     page_number = request.GET.get('page')
     per_page = 5
-
     if page_number is not None:
         start_index = (int(page_number) - 1) * per_page
         end_index = start_index + per_page
@@ -51,6 +52,7 @@ def load_more_checkins(request):
             'checkin_date': checkin.checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
             'checkin_text': checkin.checkin_text,
             'checkin_image_url': checkin.checkin_image.url if checkin.checkin_image else '',
+            'score':checkin.score,
             # 其他字段...
         }
         checkins_data.append(checkin_data)
