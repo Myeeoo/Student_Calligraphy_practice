@@ -48,6 +48,7 @@ def load_more_checkins(request):
 
     for checkin in checkins:
         localized_datetime = checkin.checkin_date.astimezone(target_timezone)
+        
         checkin_data = {
             'name': checkin.student.name,
             'class': checkin.student.Classes.name,
@@ -59,8 +60,6 @@ def load_more_checkins(request):
         }
         checkins_data.append(checkin_data)
     has_next_page = len(checkins) == per_page
-    # print('len(checkins):',len(checkins))
-    # print(has_next_page)
     response_data = {
         'checkins': checkins_data,
         'has_next_page': has_next_page,
