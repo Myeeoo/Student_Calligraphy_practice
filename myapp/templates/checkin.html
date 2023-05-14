@@ -4,29 +4,32 @@
   <h2>练习打卡</h2>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="form-group">
-        <label for="{{ form.student.id_for_label }}">学生姓名</label>
-        {% if mystudent %}
-        <select id="{{ form.student.id_for_label }}" name="{{ form.student.name }}" class="form-control">
-            {% for student in mystudent %}
-                <option value="{{ student.pk }}">{{ student.name }}</option>
-            {% endfor %}
-        </select>
-        {% else %}
-              <div class="alert alert-warning" role="alert">
+    <div class="border-bottom twitter-bootstrap" style="padding: 20px;">
+        <div class="form-group">
+            <label for="{{ form.student.id_for_label }}">打卡人</label>
+            {% if mystudent %}
+            <select id="{{ form.student.id_for_label }}" name="{{ form.student.name }}" class="form-control">
+                {% for student in mystudent %}
+                    <option value="{{ student.pk }}">{{ student.name }}</option>
+                {% endfor %}
+            </select>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
                 当前无可用的打卡学生，请到<a href="{% url 'user_center' %}">个人中心</a>绑定一个学生在账号下。
-              </div>
-        {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.checkin_text.id_for_label }}">练习感言</label>
+            {{ form.checkin_text }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.checkin_image.id_for_label }}">练习照片</label>
+            {{ form.checkin_image }}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">提交</button>
     </div>
-    <div class="form-group">
-        <label for="{{ form.checkin_text.id_for_label }}">练习感言</label>
-        {{ form.checkin_text }}
-    </div>
-    <div class="form-group">
-        <label for="{{ form.checkin_image.id_for_label }}">练习照片</label>
-        {{ form.checkin_image }}
-    </div>
-    
-    <button type="submit" class="btn btn-primary">提交</button>
 </form>
+
 {% endblock %}
