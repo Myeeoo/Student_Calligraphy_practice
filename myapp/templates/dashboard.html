@@ -297,6 +297,8 @@ function dashboard(request) {
 // 创建打卡记录元素的函数
 function createCheckinElement(checkinData) {
   var checkinDate = new Date(checkinData.checkin_date);
+  // alert(checkinData.checkin_date)
+  // alert(checkinData)
   
   // 创建日期格式化选项对象
   var options = {
@@ -311,8 +313,8 @@ function createCheckinElement(checkinData) {
   
   // 格式化日期
   var formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(checkinDate);
-  
-
+  var formattedDate1 = checkinDate.toLocaleString();
+  var formattedDate2 = checkinDate.toLocaleString('zh-CN', options);
   var card = $('<div>').addClass('card mb-5');
   var cardHeader = $('<div>').addClass('card-header bg-primary');
   
@@ -335,11 +337,11 @@ function createCheckinElement(checkinData) {
   }
   var modalHeader = $('<div>').addClass('modal-header');
   var modalHeaderLeft = $('<div>');
-  var dateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('打卡时间: ' + moment(formattedDate,'YYYY-MM-DD HH:mm:ss').fromNow());
-  var checkinDateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(checkinData.checkin_date);
+  var dateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(moment(formattedDate,'YYYY-MM-DD HH:mm:ss').fromNow());
+  // var checkinDateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(formattedDate2);
   var scoreBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('获得' + checkinData.score + '积分');
   
-  modalHeaderLeft.append(dateBadge,checkinDateBadge, scoreBadge);
+  modalHeaderLeft.append(dateBadge, scoreBadge);
   
   var modalHeaderRight = $('<div>').text('点赞功能奋力开发中...');
   

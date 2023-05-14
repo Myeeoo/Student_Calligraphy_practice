@@ -7,6 +7,7 @@ from telnetlib import LOGOUT
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+import pytz
 
 from myapp.templatetags.custom_filters import time_since_checkin
 from .models import Student, Score
@@ -43,11 +44,17 @@ def load_more_checkins(request):
     
     # 将打卡记录数据转化为 JSON 格式
     checkins_data = []
+    target_timezone = pytz.timezone('Asia/Shanghai')
+
+    # 将日期时间对象转换为目标时区
+    
+
     for checkin in checkins:
+        localized_datetime = checkin.checkin_date.astimezone(target_timezone)
         checkin_data = {
             'name': checkin.student.name,
             'class': checkin.student.Classes.name,
-            'checkin_date': checkin.checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'checkin_date': localized_datetime.strftime('%Y-%m-%d %H:%M:%S'),
             'checkin_text': checkin.checkin_text,
             'checkin_image_url': checkin.checkin_image.url if checkin.checkin_image else '',
             'score':checkin.score,
@@ -186,7 +193,9 @@ def checkin(request):
         print(form)
         if form.is_valid():
             checkin = form.save(commit=False)
-            checkin.checkin_date = datetime.now().date()  # 设置为今天的日期
+            tz = pytz.timezone('Asia/Shanghai')
+            current_datetime = datetime.now(tz)  # 获取当前 "Asia/Shanghai" 时区的日期和时间，包含时区信息
+            checkin.checkin_date = current_datetime  # 设置为今天的日期
             checkin.student = form.cleaned_data['student']
 
             # 检查是否已经打卡
@@ -233,7 +242,7 @@ def calculate_score(checkin):
     # 如果是连续打卡，则额外加 3 分
     student = checkin.student
     if student.last_checkin_date and \
-            (checkin.checkin_date - student.last_checkin_date).days == 1:
+            (checkin.checkin_date.date() - student.last_checkin_date).days == 1:
         score += 3
     student.last_checkin_date = checkin.checkin_date
     student.save()
