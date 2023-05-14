@@ -38,15 +38,15 @@
 </style>
 <ul class="nav nav-tabs">
   <li class="nav-item" style="width: 50%;">
-      <h2 class="nav-link active " data-toggle="tab" href="#score1">得分榜信息</h2>
+    <h2 class="nav-link active " data-toggle="tab" href="#score2">积分榜信息</h2>
   </li>
   <li class="nav-item" style="width: 50%;">
-    <h2 class="nav-link" data-toggle="tab" href="#score2">积分榜信息</h2>
-</li>
+      <h2 class="nav-link " data-toggle="tab" href="#score1">得分榜信息</h2>
+  </li>
 </ul>
   <!-- 创建标签页内容 -->
   <div class="tab-content">
-        <div class="tab-pane active" id="score1">
+        <div class="tab-pane" id="score1">
           <div class="row">
             <div class="col-md-6 bg-primary rounded">
               <h4 class="my-5 text-center">得分排行榜</h4>
@@ -109,7 +109,7 @@
           </div>
         </div>
 
-        <div class="tab-pane{% if forloop.first %} active{% endif %} " id="score2">
+        <div class="tab-pane active  " id="score2">
           <div class="row">
             <div class="col-md-6 bg-primary rounded">
               <h4 class="my-5 text-center">积分排行榜</h4>
@@ -130,7 +130,7 @@
                 <div class="col-md-6">
                   <div class="card mb-5 text-center" >
                     <div class="card-header bg-primary">
-                      <h2 class="card-title">学生总数</h2>
+                      <h2 class="card-title">参与总人数</h2>
                     </div>
                     <div class="card-body">
                       <h3 class="card-text">{{ num_students }}</h3>
@@ -160,7 +160,7 @@
                 <div class="col-md-6">
                   <div class="card mb-5 text-center" >
                     <div class="card-header bg-primary">
-                      <h2 class="card-title">总打卡次数</h2>
+                      <h2 class="card-title">累计打卡总次数</h2>
                     </div>
                     <div class="card-body">
                       <h3 class="card-text">{{ num_checkins_total }}</h3>

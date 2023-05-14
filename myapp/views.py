@@ -28,9 +28,7 @@ from django.shortcuts import render
 from .models import Checkin
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.views.decorators.cache import never_cache
 
-@never_cache
 def load_more_checkins(request):
     page_number = request.GET.get('page')
     per_page = 5
@@ -42,7 +40,7 @@ def load_more_checkins(request):
         end_index = per_page
 
     checkins = Checkin.objects.all().order_by('-checkin_date')[start_index:end_index]
-    print(checkins)
+    
     # 将打卡记录数据转化为 JSON 格式
     checkins_data = []
     for checkin in checkins:
