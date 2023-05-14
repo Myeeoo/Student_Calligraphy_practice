@@ -46,9 +46,6 @@ def load_more_checkins(request):
     checkins_data = []
     target_timezone = pytz.timezone('Asia/Shanghai')
 
-    # 将日期时间对象转换为目标时区
-    
-
     for checkin in checkins:
         localized_datetime = checkin.checkin_date.astimezone(target_timezone)
         checkin_data = {
