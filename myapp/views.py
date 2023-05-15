@@ -7,7 +7,6 @@ from telnetlib import LOGOUT
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-import pytz
 
 from myapp.templatetags.custom_filters import time_since_checkin
 from .models import Student, Score
@@ -29,6 +28,52 @@ from django.shortcuts import render
 from .models import Checkin
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def create_class(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Classes.create(name=name)
+            return JsonResponse({'success': True, 'message': 'Class created successfully.'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Invalid data.'})
+
+@csrf_exempt
+def update_class(request, class_id):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        try:
+            class_obj = Classes.get_by_id(class_id)
+            if name:
+                class_obj.update(name=name)
+                return JsonResponse({'success': True, 'message': 'Class updated successfully.'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Invalid data.'})
+        except Classes.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Class does not exist.'})
+
+@csrf_exempt
+def delete_class(request, class_id):
+    try:
+        Classes.delete_by_id(class_id)
+        return JsonResponse({'success': True, 'message': 'Class deleted successfully.'})
+    except Classes.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Class does not exist.'})
+
+def get_class(request, class_id):
+    try:
+        class_obj = Classes.get_by_id(class_id)
+        class_data = {'id': class_obj.id, 'name': class_obj.name}
+        return JsonResponse({'success': True, 'class': class_data})
+    except Classes.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Class does not exist.'})
+
+def get_all_classes(request):
+    classes = Classes.get_all()
+    class_list = [{'id': c.id, 'name': c.name} for c in classes]
+    return JsonResponse({'success': True, 'classes': class_list})
 
 def load_more_checkins(request):
     page_number = request.GET.get('page')
@@ -44,15 +89,11 @@ def load_more_checkins(request):
     
     # 将打卡记录数据转化为 JSON 格式
     checkins_data = []
-    target_timezone = pytz.timezone('Asia/Shanghai')
-
     for checkin in checkins:
-        localized_datetime = checkin.checkin_date.astimezone(target_timezone)
-        
         checkin_data = {
             'name': checkin.student.name,
             'class': checkin.student.Classes.name,
-            'checkin_date': localized_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+            'checkin_date': checkin.checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
             'checkin_text': checkin.checkin_text,
             'checkin_image_url': checkin.checkin_image.url if checkin.checkin_image else '',
             'score':checkin.score,
@@ -60,6 +101,8 @@ def load_more_checkins(request):
         }
         checkins_data.append(checkin_data)
     has_next_page = len(checkins) == per_page
+    # print('len(checkins):',len(checkins))
+    # print(has_next_page)
     response_data = {
         'checkins': checkins_data,
         'has_next_page': has_next_page,
@@ -189,9 +232,7 @@ def checkin(request):
         print(form)
         if form.is_valid():
             checkin = form.save(commit=False)
-            tz = pytz.timezone('Asia/Shanghai')
-            current_datetime = datetime.now(tz)  # 获取当前 "Asia/Shanghai" 时区的日期和时间，包含时区信息
-            checkin.checkin_date = current_datetime  # 设置为今天的日期
+            checkin.checkin_date = datetime.now().date()  # 设置为今天的日期
             checkin.student = form.cleaned_data['student']
 
             # 检查是否已经打卡
@@ -238,7 +279,7 @@ def calculate_score(checkin):
     # 如果是连续打卡，则额外加 3 分
     student = checkin.student
     if student.last_checkin_date and \
-            (checkin.checkin_date.date() - student.last_checkin_date).days == 1:
+            (checkin.checkin_date - student.last_checkin_date).days == 1:
         score += 3
     student.last_checkin_date = checkin.checkin_date
     student.save()

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Classes Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 获取所有班级列表
+            getAllClasses();
+            // 提交创建班级表单
+            $('#createClassForm').submit(function(event) {
+                event.preventDefault();
+                var className = $('#className').val();
+                createClass(className);
+            });
+        });
+
+        // 创建班级
+        function createClass(className) {
+            $.ajax({
+                url: '/create_class/',
+                type: 'POST',
+                data: {
+                    'name': className
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        getAllClasses();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred during the request.');
+                }
+            });
+        }
+
+        // 获取所有班级列表
+        function getAllClasses() {
+            $.ajax({
+                url: '/classes/',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        displayClasses(response.classes);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred during the request.');
+                }
+            });
+        }
+
+        // 显示班级列表
+        function displayClasses(classes) {
+            var classList = $('#classList');
+            classList.empty();
+            $.each(classes, function(index, classData) {
+                var listItem = $('<li>').text(classData.name);
+                classList.append(listItem);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Classes Management</h1>
+    
+    <form id="createClassForm">
+        <label for="className">Class Name:</label>
+        <input type="text" id="className" name="className">
+        <button type="submit">Create</button>
+    </form>
+    
+    <ul id="classList"></ul>
+
+    <script src="script.js"></script>
+</body>
+</html>
