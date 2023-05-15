@@ -7,6 +7,7 @@ from telnetlib import LOGOUT
 from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+import pytz
 
 from myapp.templatetags.custom_filters import time_since_checkin
 from .models import Student, Score
@@ -90,10 +91,11 @@ def load_more_checkins(request):
     # 将打卡记录数据转化为 JSON 格式
     checkins_data = []
     for checkin in checkins:
+        checkin_date = checkin.checkin_date.astimezone(pytz.timezone('Asia/Shanghai'))
         checkin_data = {
             'name': checkin.student.name,
             'class': checkin.student.Classes.name,
-            'checkin_date': checkin.checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'checkin_date': checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
             'checkin_text': checkin.checkin_text,
             'checkin_image_url': checkin.checkin_image.url if checkin.checkin_image else '',
             'score':checkin.score,
