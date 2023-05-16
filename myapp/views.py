@@ -118,13 +118,16 @@ def checkin_list(request):
     return render(request, 'checkin_list.html', {'checkins': checkins})
 
 def dashboard(request):
-    today = datetime.now().date()
+    today = datetime.now()
 
     # 本周的起始日期和结束日期
     this_week_start = today - timedelta(days=today.weekday())
     this_week_end = this_week_start + timedelta(days=6)
 
-
+    Last_week_start = this_week_start-timedelta(days=7)
+    Last_week_end = this_week_end-timedelta(days=7)
+    print(this_week_start,this_week_end,Last_week_start,Last_week_end)
+   
     # 统计学生总数
     Score_num_students = Student.objects.count()
 
@@ -290,7 +293,7 @@ def calculate_score(checkin):
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        print(form)
+        # print(form)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = True
@@ -359,12 +362,12 @@ def add_student(request):
         name = request.POST.get('name')
         sex = request.POST.get('sex')
         age = request.POST.get('age')
-        grade = request.POST.get('grade')
+        classes = request.POST.get('classes')
 
         # 创建学生对象并保存到数据库
         # student = Student.objects.create(student_id=student_id, name=name, sex=sex, age=age, grade=grade)
         student = Student.objects.create(
-            name=name, sex=sex, age=age, grade=grade)
+            name=name, sex=sex, age=age, Classes_id=classes)
         student.save()
         # 重定向到学生列表页面
         return redirect('student_list')

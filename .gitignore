@@ -1,8 +1,8 @@
 *.pyc
-*.pyc
 .venv
 .myenv
 node_modules
 myenv/
 db.sqlite3
 checkin_images/
+config.ini

@@ -12,10 +12,21 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
+import configparser
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 获取配置文件的路径
+config_path = os.path.join(BASE_DIR, 'config.ini')
+
+# 创建 ConfigParser 对象
+config = configparser.ConfigParser()
+
+# 读取配置文件
+config.read(config_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -81,6 +92,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': config.get('Credentials', 'DB_NAME'),
+    #     'USER': config.get('Credentials', 'DB_USER'),
+    #     'PASSWORD': config.get('Credentials', 'DB_PASSWORD'),
+    #     'HOST': config.get('Credentials', 'DB_HOST'),
+    #     'PORT': config.get('Credentials', 'DB_PORT'),
+    # }
 }
 
 
@@ -105,14 +124,26 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
+# 支持的语言列表
+LANGUAGES = [
+    ('en', 'English'),
+    ('zh-hans', '简体中文'),
+    # 添加其他支持的语言
+]
+# 国际化设置
+USE_I18N = True
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_TZ = True
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 LOGIN_URL = '/login/'
 
