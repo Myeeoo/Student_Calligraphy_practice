@@ -118,7 +118,7 @@ def checkin_list(request):
     return render(request, 'checkin_list.html', {'checkins': checkins})
 
 def dashboard(request):
-    today = datetime.now()
+    today = datetime.now().date()
 
     # 本周的起始日期和结束日期
     this_week_start = today - timedelta(days=today.weekday())
@@ -126,7 +126,7 @@ def dashboard(request):
 
     Last_week_start = this_week_start-timedelta(days=7)
     Last_week_end = this_week_end-timedelta(days=7)
-    print(this_week_start,this_week_end,Last_week_start,Last_week_end)
+    # print(this_week_start,this_week_end,Last_week_start,Last_week_end)
    
     # 统计学生总数
     Score_num_students = Student.objects.count()
