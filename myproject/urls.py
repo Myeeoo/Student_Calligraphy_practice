@@ -54,4 +54,4 @@ urlpatterns = [
     path('classes/<int:class_id>/delete/', delete_class, name='delete_class'),
     path('classes/<int:class_id>/', get_class, name='get_class'),
     path('classes/', get_all_classes, name='get_all_classes'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
