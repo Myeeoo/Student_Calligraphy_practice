@@ -47,7 +47,7 @@
     <div class="col-md-12">
       
       <h4>用户中心</h4>
-      <p>当前绑定的学生信息：</p>
+      <p>当前绑定的成员信息：</p>
       <div class="card-container">
     {% for student in Student %}
       {% if student %}
@@ -73,9 +73,9 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <h4>绑定学生</h4>
+            <h4>绑定成员</h4>
             <div class="alert alert-warning" role="alert">
-              注意：绑定的学生将不出现在可绑定菜单中，请绑定错的家长及时解绑！
+              注意：绑定的成员将不出现在可绑定菜单中，请绑定错的家长及时解绑！
             </div>
             <form method="POST">
               {% csrf_token %}
@@ -93,7 +93,7 @@
     <h4>网站管理</h4>
     <div class="row">
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'student_list' %}">学生管理</a>
+        <a class="nav-link" href="{% url 'student_list' %}">成员管理</a>
     </li>
     </div>
   </div>
