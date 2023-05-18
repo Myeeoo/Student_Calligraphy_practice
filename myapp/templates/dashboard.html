@@ -160,7 +160,7 @@
                 <div class="col-md-6">
                   <div class="card mb-5 text-center" >
                     <div class="card-header bg-primary">
-                      <h2 class="card-title">今天打卡人数</h2>
+                      <h2 class="card-title">今日打卡人数</h2>
                     </div>
                     <div class="card-body">
                       <h3 class="card-text">{{ num_checkins_today }}</h3>
@@ -170,7 +170,7 @@
                 <div class="col-md-6">
                   <div class="card mb-5 text-center" >
                     <div class="card-header bg-primary">
-                      <h2 class="card-title">本周打卡人数</h2>
+                      <h2 class="card-title">本周打卡数</h2>
                     </div>
                     <div class="card-body">
                       <h3 class="card-text">{{ num_checkins_this_week }}</h3>
@@ -180,7 +180,7 @@
                 <div class="col-md-6">
                   <div class="card mb-5 text-center" >
                     <div class="card-header bg-primary">
-                      <h2 class="card-title">累计打卡总次数</h2>
+                      <h2 class="card-title">打卡总次数</h2>
                     </div>
                     <div class="card-body">
                       <h3 class="card-text">{{ num_checkins_total }}</h3>
@@ -236,13 +236,6 @@ $(document).ready(function() {
 const button = document.getElementById('load-more-button');
 const div = document.getElementById('DI');
 
-// 添加点击事件监听器
-button.addEventListener('click', function() {
-  // 点击按钮时，隐藏按钮并显示<div>
-  // button.style.display = 'none';
-  // div.style.display = 'block';
-});
-
 // 默认情况下，隐藏<div>
 div.style.display = 'none';
 });
@@ -256,6 +249,7 @@ function dashboard(request) {
   var loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber;  // 替换为您的URL
   
   loadMoreButton.click(function() {
+    
     $.ajax({
       url: loadMoreUrl,
       type: 'GET',
@@ -267,7 +261,7 @@ function dashboard(request) {
         for (var i = 0; i < checkins_data.length; i++) {
           var checkinData = checkins_data[i];
           var checkinElement = createCheckinElement(checkinData);
-
+          
           // 将打卡记录元素追加到容器中
           checkinContainer.append(checkinElement);
         }
@@ -295,9 +289,9 @@ function dashboard(request) {
 
 // 创建打卡记录元素的函数
 function createCheckinElement(checkinData) {
-  var checkinDate = new Date(checkinData.checkin_date);
-  // alert(checkinData.checkin_date)
-  // alert(checkinData)
+  var checkin_Date = moment(checkinData.checkin_date, 'YYYY-MM-DD HH:mm:ss').toDate();
+  //  alert(checkinData.checkin_date)
+  // alert(checkin_Date)
   
   // 创建日期格式化选项对象
   var options = {
@@ -309,27 +303,26 @@ function createCheckinElement(checkinData) {
     second: '2-digit',
     timeZone: 'Asia/Shanghai' // 设置时区为亚洲/上海
   };
-  
+  var formattedDate1 = checkin_Date.toLocaleString();
+  var formattedDate = checkin_Date.toLocaleString('zh-CN', options);
   // 格式化日期
-  var formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(checkinDate);
-  var formattedDate1 = checkinDate.toLocaleString();
-  var formattedDate2 = checkinDate.toLocaleString('zh-CN', options);
+  // var formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(checkin_Date);
   var card = $('<div>').addClass('card mb-5');
   var cardHeader = $('<div>').addClass('card-header bg-primary');
-  
+
   var cardTitle = $('<h5>').addClass('card-title').text(checkinData.name).css('display', 'inline-block');
   var classBadge = $('<p>').addClass('badge bg-primary rounded-pill').text( checkinData.class);
   
-  
+
   cardHeader.append(cardTitle, classBadge);
-  
+
   var cardBody = $('<div>').addClass('card-body');
   var cardText = $('<p>').addClass('card-text').text(checkinData.checkin_text);
   
   cardBody.append(cardText);
   
   card.append(cardHeader, cardBody);
-  
+
   if (checkinData.checkin_image_url) {
     // onclick="loadFullImage('{{ MEDIA_URL }}{{ checkin.checkin_image.url }}')"
     var onclickValue = "loadFullImage('" + checkinData.checkin_image_url + "')";
@@ -349,7 +342,7 @@ function createCheckinElement(checkinData) {
   modalHeader.append(modalHeaderLeft, modalHeaderRight);
   
   card.append(modalHeader);
-
+ 
   return card;
 }
 
