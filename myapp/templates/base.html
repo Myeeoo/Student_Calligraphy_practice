@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/zh-cn.js"></script> -->
     <!--本地导入JS-->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/moument.min.js' %}"></script>
+    <script src="{% static 'js/moment.js' %}"></script>
     <script src="{% static 'js/moment-zh-cn.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
@@ -92,26 +92,28 @@
     
     <nav class="navbar navbar-expand-md navbar-dark bg-primary shadow">
         <div class="container">
-        <a class="navbar-brand" href="/">书法练习得分积分记录</a>
+        <a class="navbar-brand" href="/">
+          <img src="/static/favicon.ico" alt="网站图标">
+          书法练习得分积分记录</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     </button>
         
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">首页</a>
+                    <a class="nav-link" href="/"><i class="bi bi-house-fill"></i>首页</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'checkin' %}">打卡</a>
+                    <a class="nav-link" href="{% url 'checkin' %}"><i class="bi bi-calendar-check"></i> 打卡</a>
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'score_list' %}">成绩单</a>
+                    <a class="nav-link" href="{% url 'score_list' %}"><i class="bi bi-list-check"></i>成绩单</a>
                 </li>
                {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ user.username }}
+                      <i class="bi bi-person-lines-fill"></i> {{ user.username }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{% url 'user_center' %}">个人中心</a></li>

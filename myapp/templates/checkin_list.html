@@ -1,7 +1,31 @@
 {% extends 'base.html' %}
-
+{% load custom_filters %}
 {% block content %}
   <h1>打卡记录</h1>
+  {% for checkin in checkins %}
+      <div class="card mb-5">
+        <div class="card-header bg-primary">
+            <h5 class="card-title" style="display: inline-block;">{{ checkin.student.name }}</h5>
+            <p class="badge bg-primary rounded-pill">{{ checkin.student.Classes }}</p>
+        </div>
+        
+          <div class="card-body">
+            <p class="card-text">{{ checkin.checkin_text }}</p>
+          </div>
+          {% if checkin.checkin_image %}
+            <img class="card-img-bottom" src="{{ MEDIA_URL }}{{ checkin.checkin_image.url }}" alt="{{ checkin.checkin_text }}">
+          {% endif %}
+          <div class="modal-header">
+            <div>
+              <p class="badge bg-primary rounded-pill"> {{ checkin.checkin_date|date:'Y-m-d H:i:s'|time_since_checkin }}</p>
+              <p class="badge bg-primary rounded-pill">获得{{checkin.score}}积分</p>
+            </div>
+            <div>
+              点赞功能敬请期待
+            </div>
+        </div>
+      </div>
+    {% endfor %}
   <table class="table table-striped">
     <thead>
       <tr>
