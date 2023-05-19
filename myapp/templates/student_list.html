@@ -35,7 +35,7 @@
     </table>
     
  <!-- 查看学生信息的模态框 -->
-<div class="modal fade" id="viewModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+<div class="modal fade" id="viewModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true" style="z-index: 9999;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -58,7 +58,7 @@
   </div>
   
   <!-- 修改学生信息的模态框 -->
-  <div class="modal fade" id="editModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" style="z-index: 9999;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -67,11 +67,31 @@
         </div>
         <div class="modal-body">
           <!-- 在这里显示修改学生信息的表单 -->
-          <!-- 你可以根据需要添加表单字段 -->
-          <form action="{% url 'update_student' student.id %}" method="post">
+          <form action="{% url 'update_student' student.id % '/update'}" method="post">
             {% csrf_token %}
-            <label for="name">姓名:</label>
-            <input type="text" id="name" name="name" value="{{ student.name }}" required>
+            <div class="form-group">
+                <label for="name">姓名:</label>
+                <input type="text" class="form-control" name="name" value="{{ student.name }}" required>
+              </div>
+              <div class="form-group">
+                <label for="sex">性别:</label>
+                <select class="form-control" name="sex" id="sex">
+                  <option value="男生">男生</option>
+                  <option value="女生">女生</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="age">年龄:</label>
+                <input type="number" class="form-control" name="age" value="{{ student.age }}"required>
+              </div>
+              <div class="form-group">
+                <label for="classes">班级:</label>
+                <select class="form-control" name="classes" id="classes">
+                  {% for class_obj in classes %}
+                  <option value="{{ class_obj.id }}">{{ class_obj.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             <!-- 其他表单字段 -->
             <button type="submit" class="btn btn-primary">保存</button>
           </form>
