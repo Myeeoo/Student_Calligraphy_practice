@@ -17,7 +17,7 @@ from django import views
 from django.contrib import admin
 from django.urls import include, path
 from myapp.views import (
-    checkin, checkin_list, create_class, dashboard, delete_class, get_all_classes, get_class, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, update_class, update_student, user_center
+    checkin, checkin_list, create_class, dashboard, delete_class, get_all_classes, get_class, like_checkin, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, update_class, update_student, user_center
 )
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
@@ -54,4 +54,5 @@ urlpatterns = [
     path('classes/<int:class_id>/delete/', delete_class, name='delete_class'),
     path('classes/<int:class_id>/', get_class, name='get_class'),
     path('classes/', get_all_classes, name='get_all_classes'),
+    path('like_checkin/<int:checkin_id>/', like_checkin, name='like_checkin'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -197,7 +197,7 @@
   
   <h2 class="my-5">打卡记录</h2>
   <div class="card-deck" id="checkin-container">
-    <!-- {% for checkin in checkins %}
+    {% for checkin in checkins %}
       <div class="card mb-5">
         <div class="card-header bg-primary">
             <h5 class="card-title" style="display: inline-block;">{{ checkin.student.name }}</h5>
@@ -216,11 +216,19 @@
               <p class="badge bg-primary rounded-pill">获得{{checkin.score}}积分</p>
             </div>
             <div>
-              点赞功能敬请期待
+              <a id="like-btn_{{ checkin.id }}" class="rounded-pill" href="#" data-checkin-id="{{ checkin.id }}">
+                <i id="like-BI" class="bi bi-hand-thumbs-up-fill"></i>
+                {% if current_user in checkin.likes.all %}
+                  取消
+                {% else %}
+                  点赞
+                {% endif %}
+                {{ checkin.get_likes_count }}
+              </a>
             </div>
         </div>
       </div>
-    {% endfor %} -->
+    {% endfor %}
   </div>
   <button class="btn btn-primary " id="load-more-button">加载更多</button>
   <div id='DI'><a>已经到底了！</a></div>
@@ -228,10 +236,35 @@
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
   dashboard()
+      //点赞部分 
+      $('a[id^="like-btn_"]').click(function(e) {
+        e.preventDefault();
+      
+        var checkinId = $(this).attr('data-checkin-id');
+        var likeUrl = '/like_checkin/' + checkinId + '/';
+          showPopup(likeUrl)
+          $.ajax({
+            url: likeUrl,
+            method: 'POST',
+            dataType: 'json',
+            success: function(response) {
+              alert("111");
+              // 处理点赞成功后的逻辑，例如更新点赞数或样式
+              // ...
+            },
+            error: function(xhr, status, error) {
+              alert("message");
+              // 处理错误情况
+              // ...
+            }
+          });
+          alert("11")
+    });
+
+
   // 获取按钮和<div>元素
 const button = document.getElementById('load-more-button');
 const div = document.getElementById('DI');
@@ -337,7 +370,7 @@ function createCheckinElement(checkinData) {
   
   modalHeaderLeft.append(dateBadge, scoreBadge);
   
-  var modalHeaderRight = $('<div>').text('点赞功能奋力开发中..');
+  var modalHeaderRight = $('<p>').addClass('badge rounded-pill').text('已有'+ checkinData.get_likes_count +'赞');
   
   modalHeader.append(modalHeaderLeft, modalHeaderRight);
   

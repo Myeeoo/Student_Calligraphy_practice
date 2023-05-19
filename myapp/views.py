@@ -471,3 +471,19 @@ def add_score(request):
         'students_forms': zip(students, forms)
     }
     return render(request, 'add_score.html', context)
+
+def like_checkin(request, checkin_id):
+    checkin = Checkin.objects.get(id=checkin_id)
+    current_user = request.user
+    if current_user in checkin.likes.all():
+        # 取消点赞
+        print("unlike",checkin.pk)
+        checkin.likes.remove(current_user)
+        checkin.save()
+        return JsonResponse({'status': 'success', 'message': 'unlike'})
+    else:
+        # 点赞
+        print("like",checkin.pk)
+        checkin.likes.add(current_user)
+        checkin.save()
+        return JsonResponse({'status': 'success', 'message': 'like'})
