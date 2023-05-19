@@ -5,10 +5,11 @@ from multiprocessing import AuthenticationError
 from pyexpat.errors import messages as msg
 from telnetlib import LOGOUT
 from django.forms import formset_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
+from django.test import RequestFactory
 import pytz
-
+from django.contrib.auth.decorators import login_required, user_passes_test
 from myapp.templatetags.custom_filters import time_since_checkin
 from .models import Student, Score
 from .forms import BindStudentForm, ScoreForm
@@ -343,12 +344,16 @@ def student_detail(request, student_id):
 def score_list(request):
     # 查询 Score 模型并按日期分组
     scores = Score.objects.order_by('date').values('date').distinct()
-    print(scores)
     score_list = {}
     for score in scores:
         date = score['date']
         score_list[date] = Score.objects.filter(date=date)
-    return render(request, 'score_list.html', {'scores': score_list})
+    classes = Classes.objects.all()
+    context = {
+        'classes': classes,
+        'scores': score_list
+    }
+    return render(request, 'score_list.html', context)
 
 def score_detail(request, score_id):
     score = get_object_or_404(Score, id=score_id)
@@ -372,31 +377,29 @@ def add_student(request):
         # 重定向到学生列表页面
         return redirect('student_list')
     classes = Classes.objects.all()
-    print(classes)
     context = {
         'classes': classes
     }
     return render(request, 'add_student.html',context)
-
    #原
-def add_score(request):
+def check_teacher_group(request):
+    if not request.user.groups.filter(name='教师').exists():
+        messages.error(request, '当前账号不能执行此操作！')
+        return False
+    return True
 
+@login_required
+def add_score(request):
+    if not check_teacher_group(request):
+        return redirect('score_list')
+    
     if request.method == 'POST':
         students = Student.objects.all()
-        print(request.POST)
-        post_data = request.POST.copy()
-        # forms = [ScoreForm(post_data,student_id=student.student_id) for student in students]
         forms = [ScoreForm(request.POST, student=student,student_id=student.student_id) for student in students]
-        print(len(forms))
-        
         for student, form in zip(students, forms):
                 form.fields['score'].widget.attrs.update({'name': f'score_{student.pk}'})
                 form.fields['add_score'].widget.attrs.update({'name': f'add_score_{student.pk}'})
-                
-                
-        
-        # for form, student in zip(forms, students):
-        #     form.fields['student'].queryset = Student.objects.filter(pk=student.pk)        
+              
         if all(form.is_valid() for form in forms):
             for student, form in zip(students, forms):
                 #form.student=student
@@ -405,15 +408,7 @@ def add_score(request):
                 form.add_score = request.POST.get('add_score_%d' % student.pk)
                 form.cleaned_data['score'] = request.POST.get('score_%d' % student.pk)
                 form.cleaned_data['add_score'] = request.POST.get('add_score_%d' % student.pk)
-                #print(form.score)
-                
-                # print(form.student)
-                # print("姓名：", form.data.get('student'))
-                # print("学生编号：", form.cleaned_data.get('student_id'))
-                # print("得分:",form.cleaned_data['score'])
-                
-                # print(form.cleaned_data)
-                # form.cleaned_data['student'] = student
+               
                 if form.is_valid():
                     form.save()# 保存表单数据到数据库
                 else:
@@ -430,7 +425,9 @@ def add_score(request):
             print("数据验证不合法！")
         
     else:
-        students = Student.objects.all()
+        classes = request.GET.get('classes')
+        print(classes)
+        students = Student.objects.filter(Classes_id=classes)
         forms = [ScoreForm(initial={'student': student, 'student_id': student.student_id,'score': 80, 'add_score': 0}) for student in students]
         for form ,student  in zip(forms,students):
             if form:

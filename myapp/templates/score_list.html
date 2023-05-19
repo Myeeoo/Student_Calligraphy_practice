@@ -29,6 +29,34 @@
 </style>
   <h1>成绩列表</h1>
   <a href="{% url 'add_score' %}">添加成绩表</a>
+  <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#classModal">添加成绩表</a>
+  <div class="modal fade" id="classModal" tabindex="-1" aria-labelledby="classModal" aria-hidden="true" style="z-index: 9999;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary">
+          <h5 class="modal-title" id="classModal">选择班级</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 在这里放置登录表单 -->
+          <form method="get" action="{% url 'add_score' %}">
+            {% csrf_token %}
+            <select class="form-control" name="classes" id="classes">
+              {% for class_obj in classes %}
+              <option value="{{ class_obj.id }}">{{ class_obj.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">确定</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+          </form>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
   <!-- 创建标签页导航 -->
   <ul class="nav nav-tabs">
     {% for date, score_list in scores.items %}

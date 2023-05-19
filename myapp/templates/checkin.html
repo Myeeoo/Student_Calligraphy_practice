@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>练习打卡</h2>
+  <h4>练习打卡</h4>
+  <div class="alert alert-info">
+    
+    <p class="mb-0"><i class="bi bi-info-circle-fill"></i>  打卡积分规则：打卡即可获得5积分，周末打卡加2积分，连续打卡加3积分！</p>
+  </div>
+  
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="border-bottom twitter-bootstrap" style="padding: 20px;">
