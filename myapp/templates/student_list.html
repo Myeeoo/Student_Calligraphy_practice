@@ -1,30 +1,87 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>学生列表</h1><a href="{% url 'add_student' %}">添加成员</a>
-    <table class='form-control'>
-        <tr>
-            <th>学号</th>
-            <th>姓名</th>
-            <th>性别</th>
-            <th>年龄</th>
-            <th>班级</th>
-            
-        </tr>
-        {% for student in students %}
-        <tr>
-            <td>{{ student.student_id }}</td>
-            <td>{{ student.name }}</td>
-            <td>{{ student.sex }}</td>
-            <td>{{ student.age }}</td>
-            <td>{{ student.Classes}}</td>
-            
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6">该班级暂无学生信息</td>
-        </tr>
-        {% endfor %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>年龄</th>
+                <th>班级</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.student_id }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.sex }}</td>
+                <td>{{ student.age }}</td>
+                <td>{{ student.Classes }}</td>
+                <td>
+                    <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal{{ student.id }}">查看</a>
+                    <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ student.id }}">修改</a>
+
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">该班级暂无学生信息</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
+    
+ <!-- 查看学生信息的模态框 -->
+<div class="modal fade" id="viewModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewModalLabel">学生信息</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 在这里显示学生的详细信息 -->
+          <p>学号：{{ student.student_id }}</p>
+          <p>姓名：{{ student.name }}</p>
+          <p>性别：{{ student.sex }}</p>
+          <p>年龄：{{ student.age }}</p>
+          <p>班级：{{ student.Classes }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 修改学生信息的模态框 -->
+  <div class="modal fade" id="editModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">修改学生信息</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 在这里显示修改学生信息的表单 -->
+          <!-- 你可以根据需要添加表单字段 -->
+          <form action="{% url 'update_student' student.id %}" method="post">
+            {% csrf_token %}
+            <label for="name">姓名:</label>
+            <input type="text" id="name" name="name" value="{{ student.name }}" required>
+            <!-- 其他表单字段 -->
+            <button type="submit" class="btn btn-primary">保存</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>   
     
 
     {% endblock %}

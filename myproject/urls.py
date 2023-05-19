@@ -17,7 +17,7 @@ from django import views
 from django.contrib import admin
 from django.urls import include, path
 from myapp.views import (
-    checkin, checkin_list, create_class, dashboard, delete_class, get_all_classes, get_class, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, update_class, user_center
+    checkin, checkin_list, create_class, dashboard, delete_class, get_all_classes, get_class, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, update_class, update_student, user_center
 )
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
@@ -26,12 +26,12 @@ from django.conf import settings
 
 urlpatterns = [
     path('', dashboard, name='dashboard'),
-    # path('', student_list, name='student_list'),
     path('checkin/', checkin, name='checkin'),
     path('checkin_list',checkin_list,name='checkin_list'),
     path('admin/', admin.site.urls),
     path('student', student_list, name='student_list'),
     path('student/<int:student_id>/', student_detail, name='student_detail'),
+    path('student/<int:student_id>/update/', update_student, name='update_student'),
     path('score/', score_list, name='score_list'), # 更新 score_list 路由
     path('score/<int:score_id>/', score_detail, name='score_detail'), # 更新 score_detail 路由
     path('add_student/', add_student, name='add_student'),
