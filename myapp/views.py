@@ -94,12 +94,15 @@ def load_more_checkins(request):
     for checkin in checkins:
         checkin_date = checkin.checkin_date.astimezone(pytz.timezone('Asia/Shanghai'))
         checkin_data = {
+            'id':checkin.id,
             'name': checkin.student.name,
             'class': checkin.student.Classes.name,
             'checkin_date': checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
             'checkin_text': checkin.checkin_text,
             'checkin_image_url': checkin.checkin_image.url if checkin.checkin_image else '',
             'score':checkin.score,
+            'likescount':checkin.get_likes_count(),
+            'current_user_liked':True if request.user in checkin.likes.all() else False,
             # 其他字段...
         }
         checkins_data.append(checkin_data)
@@ -121,6 +124,7 @@ def checkin_list(request):
 def dashboard(request):
     today = datetime.now().date()
 
+    user=request.user
     # 本周的起始日期和结束日期
     this_week_start = today - timedelta(days=today.weekday())
     this_week_end = this_week_start + timedelta(days=6)
@@ -176,6 +180,7 @@ def dashboard(request):
         'top_students': top_students,
         'total_points': total_points,
         'checkins': checkins,
+        'current_user':user,
     }
 
     return render(request, 'dashboard.html', context)
@@ -475,15 +480,28 @@ def add_score(request):
 def like_checkin(request, checkin_id):
     checkin = Checkin.objects.get(id=checkin_id)
     current_user = request.user
+    
+    
     if current_user in checkin.likes.all():
         # 取消点赞
-        print("unlike",checkin.pk)
         checkin.likes.remove(current_user)
         checkin.save()
-        return JsonResponse({'status': 'success', 'message': 'unlike'})
+        like_status='unlike'
+        
     else:
         # 点赞
-        print("like",checkin.pk)
         checkin.likes.add(current_user)
         checkin.save()
-        return JsonResponse({'status': 'success', 'message': 'like'})
+        like_status='like'
+    
+    likes_count = checkin.get_likes_count()
+    likes = checkin.get_likes_list()
+
+    response_data = {
+        'status': 'success',
+        'message': like_status,
+        'checkid':checkin_id,
+        'likescount':likes_count,
+
+    }
+    return JsonResponse(response_data)

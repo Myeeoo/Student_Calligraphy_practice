@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
-
+{% csrf_token %}
 {% block content %}
 <style>
   #modal .modal-body {
@@ -197,7 +197,7 @@
   
   <h2 class="my-5">打卡记录</h2>
   <div class="card-deck" id="checkin-container">
-    {% for checkin in checkins %}
+    <!-- {% for checkin in checkins %}
       <div class="card mb-5">
         <div class="card-header bg-primary">
             <h5 class="card-title" style="display: inline-block;">{{ checkin.student.name }}</h5>
@@ -215,20 +215,15 @@
               <p class="badge bg-primary rounded-pill"> {{ checkin.checkin_date|date:'Y-m-d H:i:s'|time_since_checkin }}</p>
               <p class="badge bg-primary rounded-pill">获得{{checkin.score}}积分</p>
             </div>
-            <div>
-              <a id="like-btn_{{ checkin.id }}" class="rounded-pill" href="#" data-checkin-id="{{ checkin.id }}">
-                <i id="like-BI" class="bi bi-hand-thumbs-up-fill"></i>
-                {% if current_user in checkin.likes.all %}
-                  取消
-                {% else %}
-                  点赞
-                {% endif %}
-                {{ checkin.get_likes_count }}
+            <div style="margin-right: 10px;">
+              <a id="like-btn-{{ checkin.id }}" class="rounded-pill" href="#" data-checkin-id="{{ checkin.id }}" style="text-decoration: none;">
+                <i id="like-BI-{{ checkin.id }}" class="bi {% if current_user in checkin.likes.all %}bi-hand-thumbs-up-fill{% else %}bi-hand-thumbs-up{% endif %}"></i>
+                <span>{{ checkin.get_likes_count }}</span>
               </a>
             </div>
         </div>
       </div>
-    {% endfor %}
+    {% endfor %} -->
   </div>
   <button class="btn btn-primary " id="load-more-button">加载更多</button>
   <div id='DI'><a>已经到底了！</a></div>
@@ -237,32 +232,96 @@
 </div>
 
 <script>
+
+  // 委托点击事件给父元素
+
 $(document).ready(function() {
-  dashboard()
-      //点赞部分 
-      $('a[id^="like-btn_"]').click(function(e) {
-        e.preventDefault();
-      
+  dashboard();
+
+  $('div').on('click', 'a[id^="like-btn"]', function(e) {
+  e.preventDefault();
+        // alert($(this).attr('id'));
         var checkinId = $(this).attr('data-checkin-id');
+        
         var likeUrl = '/like_checkin/' + checkinId + '/';
-          showPopup(likeUrl)
+          // showPopup(likeUrl)
+          
           $.ajax({
             url: likeUrl,
             method: 'POST',
             dataType: 'json',
+            headers: {
+                'X-CSRFToken':getCookie('csrftoken')
+            },
             success: function(response) {
-              alert("111");
-              // 处理点赞成功后的逻辑，例如更新点赞数或样式
-              // ...
+              var isLike = response.message;
+              var checkinID=response.checkid;
+              var likeCount=response.likescount;
+              // alert(likeUrl)
+             // 更新点赞图标
+              var likeIcon = $('#like-BI-' + checkinId);
+              if (isLike === 'like') {
+                likeIcon.removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
+                
+              } else {
+                likeIcon.removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+              }
+              // 更新点赞数
+              var likeCountElement = $('#like-btn-' + checkinId + ' span');
+              likeCountElement.text(likeCount);
+              // alert("New：likeCount:"+likeCount+',checkinID:'+checkinID+',isLike'+isLike)
             },
             error: function(xhr, status, error) {
-              alert("message");
+              alert("错误：",status,error);
               // 处理错误情况
               // ...
             }
           });
-          alert("11")
+        
+});
+
+      //点赞部分 
+      $('a[id^="like-btn-"]').click(function(e) {
+        alert("Old is runing!");
+        e.preventDefault();
+        
+        var checkinId = $(this).attr('data-checkin-id');
+        
+        var likeUrl = '/like_checkin/' + checkinId + '/';
+          // showPopup(likeUrl)
+          $.ajax({
+            url: likeUrl,
+            method: 'POST',
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken':getCookie('csrftoken')
+            },
+            success: function(response) {
+              var isLike = response.message;
+              var checkinID=response.checkid;
+              var likeCount=response.likescount;
+              
+             // 更新点赞图标
+              var likeIcon = $('#like-BI-' + checkinId);
+              if (isLike === 'like') {
+                likeIcon.removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
+                
+              } else {
+                likeIcon.removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+              }
+              // 更新点赞数
+              var likeCountElement = $('#like-btn-' + checkinId + ' span');
+              likeCountElement.text(likeCount);
+              alert("likeCount:"+likeCount+',checkinID:'+checkinID+',isLike'+isLike)
+            },
+            error: function(xhr, status, error) {
+              alert("错误：",status,error);
+              // 处理错误情况
+              // ...
+            }
+          });
     });
+
 
 
   // 获取按钮和<div>元素
@@ -272,6 +331,22 @@ const div = document.getElementById('DI');
 // 默认情况下，隐藏<div>
 div.style.display = 'none';
 });
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 
 function dashboard(request) {
   var loadMoreButton = $('#load-more-button');
@@ -322,6 +397,7 @@ function dashboard(request) {
 
 // 创建打卡记录元素的函数
 function createCheckinElement(checkinData) {
+
   var checkin_Date = moment(checkinData.checkin_date, 'YYYY-MM-DD HH:mm:ss').toDate();
   //  alert(checkinData.checkin_date)
   // alert(checkin_Date)
@@ -370,9 +446,16 @@ function createCheckinElement(checkinData) {
   
   modalHeaderLeft.append(dateBadge, scoreBadge);
   
-  var modalHeaderRight = $('<p>').addClass('badge rounded-pill').text('已有'+ checkinData.get_likes_count +'赞');
-  
+  var likeBtn = $('<a>').attr('id', 'like-btn-' + checkinData.id).addClass('rounded-pill').attr('href', '#').attr('data-checkin-id', checkinData.id).css('text-decoration', 'none');
+  var likeIcon = $('<i>').attr('id', 'like-BI-' + checkinData.id).addClass('bi').addClass((checkinData.current_user_liked) ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up').css('width', '24');
+  var likeCount = $('<span>').text(checkinData.likescount);
+
+  likeBtn.append(likeIcon, likeCount);
+
+  var modalHeaderRight = $('<div>').addClass('badge rounded-pill').attr('ID', 'Likes').append(likeBtn);
+
   modalHeader.append(modalHeaderLeft, modalHeaderRight);
+
   
   card.append(modalHeader);
  
