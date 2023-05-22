@@ -37,6 +37,7 @@ class Student(models.Model):
     Classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
     user = models.ManyToManyField(User,through='StudentUser')
     last_checkin_date = models.DateField(null=True, blank=True)
+    consecutive = models.IntegerField(default=0)
     
     def __str__(self):
         return self.name

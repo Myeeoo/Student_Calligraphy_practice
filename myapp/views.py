@@ -293,9 +293,11 @@ def calculate_score(checkin):
     if student.last_checkin_date and \
             (checkin.checkin_date - student.last_checkin_date).days == 1:
         score += 3
-        checkin.consecutive_checkins=checkin.consecutive_checkins+1
+        student.consecutive=student.consecutive+1
+        
     else:
-        checkin.consecutive_checkins=0
+        student.consecutive=0
+    checkin.consecutive_checkins=student.consecutive
     student.last_checkin_date = checkin.checkin_date
     student.save()
     return score
