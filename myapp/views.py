@@ -103,6 +103,7 @@ def load_more_checkins(request):
             'score':checkin.score,
             'likescount':checkin.get_likes_count(),
             'current_user_liked':True if request.user in checkin.likes.all() else False,
+            'consecutive_checkins':checkin.consecutive_checkins,
             # 其他字段...
         }
         checkins_data.append(checkin_data)
@@ -292,6 +293,9 @@ def calculate_score(checkin):
     if student.last_checkin_date and \
             (checkin.checkin_date - student.last_checkin_date).days == 1:
         score += 3
+        checkin.consecutive_checkins=checkin.consecutive_checkins+1
+    else:
+        checkin.consecutive_checkins=0
     student.last_checkin_date = checkin.checkin_date
     student.save()
     return score

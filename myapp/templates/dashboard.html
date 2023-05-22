@@ -197,11 +197,23 @@
   
   <h2 class="my-5">打卡记录</h2>
   <div class="card-deck" id="checkin-container">
-    <!-- {% for checkin in checkins %}
+    {% for checkin in checkins %}
       <div class="card mb-5">
-        <div class="card-header bg-primary">
-            <h5 class="card-title" style="display: inline-block;">{{ checkin.student.name }}</h5>
-            <p class="badge bg-primary rounded-pill">{{ checkin.student.Classes }}</p>
+        <div class="card-header bg-primary ">
+            <div class="modal-header">
+                <div>
+                  <h5 class="card-title" style="display: inline-block;">{{ checkin.student.name }}</h5>
+                  <p class="badge bg-primary rounded-pill">{{ checkin.student.Classes }}</p>
+              </div>
+              <div >
+                {% if checkin.consecutive_checkins > 0 %}
+                    <p class="badge bg-primary rounded-pill">
+                        <i class="bi bi-bookmark-check-fill"></i>
+                        连续打卡{{ checkin.consecutive_checkins }}天
+                    </p>
+                {% endif %}
+              </div>
+          </div>
         </div>
         
           <div class="card-body">
@@ -223,7 +235,7 @@
             </div>
         </div>
       </div>
-    {% endfor %} -->
+    {% endfor %}
   </div>
   <button class="btn btn-primary " id="load-more-button">加载更多</button>
   <div id='DI'><a>已经到底了！</a></div>
@@ -272,7 +284,7 @@ $(document).ready(function() {
               // alert("New：likeCount:"+likeCount+',checkinID:'+checkinID+',isLike'+isLike)
             },
             error: function(xhr, status, error) {
-              alert("错误：",status,error);
+              // alert("错误：",status,error);
               // 处理错误情况
               // ...
             }
@@ -281,46 +293,46 @@ $(document).ready(function() {
 });
 
       //点赞部分 
-      $('a[id^="like-btn-"]').click(function(e) {
-        alert("Old is runing!");
-        e.preventDefault();
+    //   $('a[id^="like-btn-"]').click(function(e) {
+    //     alert("Old is runing!");
+    //     e.preventDefault();
         
-        var checkinId = $(this).attr('data-checkin-id');
+    //     var checkinId = $(this).attr('data-checkin-id');
         
-        var likeUrl = '/like_checkin/' + checkinId + '/';
-          // showPopup(likeUrl)
-          $.ajax({
-            url: likeUrl,
-            method: 'POST',
-            dataType: 'json',
-            headers: {
-                'X-CSRFToken':getCookie('csrftoken')
-            },
-            success: function(response) {
-              var isLike = response.message;
-              var checkinID=response.checkid;
-              var likeCount=response.likescount;
+    //     var likeUrl = '/like_checkin/' + checkinId + '/';
+    //       // showPopup(likeUrl)
+    //       $.ajax({
+    //         url: likeUrl,
+    //         method: 'POST',
+    //         dataType: 'json',
+    //         headers: {
+    //             'X-CSRFToken':getCookie('csrftoken')
+    //         },
+    //         success: function(response) {
+    //           var isLike = response.message;
+    //           var checkinID=response.checkid;
+    //           var likeCount=response.likescount;
               
-             // 更新点赞图标
-              var likeIcon = $('#like-BI-' + checkinId);
-              if (isLike === 'like') {
-                likeIcon.removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
+    //          // 更新点赞图标
+    //           var likeIcon = $('#like-BI-' + checkinId);
+    //           if (isLike === 'like') {
+    //             likeIcon.removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
                 
-              } else {
-                likeIcon.removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
-              }
-              // 更新点赞数
-              var likeCountElement = $('#like-btn-' + checkinId + ' span');
-              likeCountElement.text(likeCount);
-              alert("likeCount:"+likeCount+',checkinID:'+checkinID+',isLike'+isLike)
-            },
-            error: function(xhr, status, error) {
-              alert("错误：",status,error);
-              // 处理错误情况
-              // ...
-            }
-          });
-    });
+    //           } else {
+    //             likeIcon.removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+    //           }
+    //           // 更新点赞数
+    //           var likeCountElement = $('#like-btn-' + checkinId + ' span');
+    //           likeCountElement.text(likeCount);
+    //           alert("likeCount:"+likeCount+',checkinID:'+checkinID+',isLike'+isLike)
+    //         },
+    //         error: function(xhr, status, error) {
+    //           alert("错误：",status,error);
+    //           // 处理错误情况
+    //           // ...
+    //         }
+    //       });
+    // });
 
 
 
@@ -397,12 +409,8 @@ function dashboard(request) {
 
 // 创建打卡记录元素的函数
 function createCheckinElement(checkinData) {
-
   var checkin_Date = moment(checkinData.checkin_date, 'YYYY-MM-DD HH:mm:ss').toDate();
-  //  alert(checkinData.checkin_date)
-  // alert(checkin_Date)
-  
-  // 创建日期格式化选项对象
+
   var options = {
     year: 'numeric',
     month: '2-digit',
@@ -410,71 +418,68 @@ function createCheckinElement(checkinData) {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    timeZone: 'Asia/Shanghai' // 设置时区为亚洲/上海
+    timeZone: 'Asia/Shanghai'
   };
   var formattedDate1 = checkin_Date.toLocaleString();
   var formattedDate = checkin_Date.toLocaleString('zh-CN', options);
-  // 格式化日期
-  // var formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(checkin_Date);
+
   var card = $('<div>').addClass('card mb-5');
   var cardHeader = $('<div>').addClass('card-header bg-primary');
+  var modalHeader = $('<div>').addClass('modal-header');
 
   var cardTitle = $('<h5>').addClass('card-title').text(checkinData.name).css('display', 'inline-block');
-  var classBadge = $('<p>').addClass('badge bg-primary rounded-pill').text( checkinData.class);
-  
+  var classBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(checkinData.class);
 
   cardHeader.append(cardTitle, classBadge);
 
+  if (checkinData.consecutive_checkins > 0) {
+    var consecutiveCheckins = $('<p>').addClass('badge bg-primary rounded-pill text-danger')
+      .html('<i class="bi bi-bookmark-check-fill"></i>连续打卡' + checkinData.consecutive_checkins + '天');
+    cardHeader.append(consecutiveCheckins);
+  }
+
   var cardBody = $('<div>').addClass('card-body');
   var cardText = $('<p>').addClass('card-text').text(checkinData.checkin_text);
-  
+
   cardBody.append(cardText);
-  
+
   card.append(cardHeader, cardBody);
 
   if (checkinData.checkin_image_url) {
-    // onclick="loadFullImage('{{ MEDIA_URL }}{{ checkin.checkin_image.url }}')"
     var onclickValue = "loadFullImage('" + checkinData.checkin_image_url + "')";
-    var cardImage = $('<img>').addClass('card-img-bottom').attr('src', checkinData.checkin_image_url).attr('alt', checkinData.checkin_text).attr('onclick',"loadFullImage('"+checkinData.checkin_image_url+"')");
+    var cardImage = $('<img>').addClass('card-img-bottom').attr('src', checkinData.checkin_image_url)
+      .attr('alt', checkinData.checkin_text).attr('onclick', onclickValue);
     card.append(cardImage);
   }
-  var modalHeader = $('<div>').addClass('modal-header');
+
   var modalHeaderLeft = $('<div>');
-  var dateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(moment(formattedDate,'YYYY-MM-DD HH:mm:ss').fromNow());
-  // var checkinDateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(formattedDate2);
+  var dateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(moment(formattedDate, 'YYYY-MM-DD HH:mm:ss').fromNow());
   var scoreBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('获得' + checkinData.score + '积分');
-  
+
   modalHeaderLeft.append(dateBadge, scoreBadge);
-  
-  var likeBtn = $('<a>').attr('id', 'like-btn-' + checkinData.id).addClass('rounded-pill').attr('href', '#').attr('data-checkin-id', checkinData.id).css('text-decoration', 'none');
-  var likeIcon = $('<i>').attr('id', 'like-BI-' + checkinData.id).addClass('bi').addClass((checkinData.current_user_liked) ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up').css('width', '24');
+
+  var likeBtn = $('<a>').attr('id', 'like-btn-' + checkinData.id).addClass('rounded-pill').attr('href', '#')
+    .attr('data-checkin-id', checkinData.id).css('text-decoration', 'none');
+  var likeIcon = $('<i>').attr('id', 'like-BI-' + checkinData.id).addClass('bi')
+    .addClass((checkinData.current_user_liked) ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up').css('width', '24');
   var likeCount = $('<span>').text(checkinData.likescount);
 
   likeBtn.append(likeIcon, likeCount);
-
   var modalHeaderRight = $('<div>').addClass('badge rounded-pill').attr('ID', 'Likes').append(likeBtn);
 
   modalHeader.append(modalHeaderLeft, modalHeaderRight);
-
-  
   card.append(modalHeader);
- 
+
   return card;
 }
 
-
 function loadFullImage(imageUrl) {
-    // 获取模态框和图片元素
-    var modal = $('#fullImageModal');
+  var modal = $('#fullImageModal');
   var fullImage = $('#fullImage');
-  
-  // 设置图片的src属性为原始图片的URL
   fullImage.attr('src', imageUrl);
-  
-  // 显示模态框
   modal.modal('show');
-
 }
+
 
 </script>
 {% endblock %}

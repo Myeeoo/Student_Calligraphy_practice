@@ -61,6 +61,7 @@ class Checkin(models.Model):
     checkin_image = models.ImageField(upload_to='checkin_images', blank=True, null=True)
     score = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, through='Like')
+    consecutive_checkins = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.student.name} - {self.checkin_date}"
