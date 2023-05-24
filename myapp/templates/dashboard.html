@@ -379,7 +379,7 @@ function createCheckinElement2(checkinData) {
       ${checkinData.checkin_image_url ? `<img class="card-img-bottom" src="${checkinData.checkin_image_url}" alt="${checkinData.checkin_text}">` : ''}
       <div class="modal-header">
         <div>
-          <p class="badge bg-primary rounded-pill">${checkinData.checkin_date}</p>
+          <p class="badge bg-primary rounded-pill">${time_since_checkin(checkinData.checkin_date)}</p>
           <p class="badge bg-primary rounded-pill">获得${checkinData.score}积分</p>
         </div>
         <div style="margin-right: 10px;">
