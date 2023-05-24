@@ -77,6 +77,7 @@ def get_all_classes(request):
     class_list = [{'id': c.id, 'name': c.name} for c in classes]
     return JsonResponse({'success': True, 'classes': class_list})
 
+
 def load_more_checkins(request):
     page_number = request.GET.get('page')
     per_page = 5
@@ -483,6 +484,7 @@ def add_score(request):
     }
     return render(request, 'add_score.html', context)
 
+@login_required
 def like_checkin(request, checkin_id):
     checkin = Checkin.objects.get(id=checkin_id)
     current_user = request.user

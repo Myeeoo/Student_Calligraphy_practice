@@ -197,7 +197,7 @@
   
   <h2 class="my-5">打卡记录</h2>
   <div class="card-deck" id="checkin-container">
-    {% for checkin in checkins %}
+    <!-- {% for checkin in checkins %}
       <div class="card mb-5">
         <div class="card-header bg-primary ">
             <div class="modal-header">
@@ -235,7 +235,7 @@
             </div>
         </div>
       </div>
-    {% endfor %}
+    {% endfor %} -->
   </div>
   <button class="btn btn-primary " id="load-more-button">加载更多</button>
   <div id='DI'><a>已经到底了！</a></div>
@@ -250,49 +250,49 @@
 $(document).ready(function() {
   dashboard();
 
-  $('div').on('click', 'a[id^="like-btn"]', function(e) {
-  e.preventDefault();
-        // alert($(this).attr('id'));
-        var checkinId = $(this).attr('data-checkin-id');
+//   $('div').on('click', 'a[id^="like-btn"]', function(e) {
+//   e.preventDefault();
+//         // alert($(this).attr('id'));
+//         var checkinId = $(this).attr('data-checkin-id');
         
-        var likeUrl = '/like_checkin/' + checkinId + '/';
-          // showPopup(likeUrl)
+//         var likeUrl = '/like_checkin/' + checkinId + '/';
+//           // showPopup(likeUrl)
           
-          $.ajax({
-            url: likeUrl,
-            method: 'POST',
-            dataType: 'json',
-            headers: {
-                'X-CSRFToken':getCookie('csrftoken')
-            },
-            success: function(response) {
-              var isLike = response.message;
-              var checkinID=response.checkid;
-              var likeCount=response.likescount;
-              // alert(likeUrl)
-             // 更新点赞图标
-              var likeIcon = $('#like-BI-' + checkinId);
-              if (isLike === 'like') {
-                likeIcon.removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
+//           $.ajax({
+//             url: likeUrl,
+//             method: 'POST',
+//             dataType: 'json',
+//             headers: {
+//                 'X-CSRFToken':getCookie('csrftoken')
+//             },
+//             success: function(response) {
+//               var isLike = response.message;
+//               var checkinID=response.checkid;
+//               var likeCount=response.likescount;
+//               // alert(likeUrl)
+//              // 更新点赞图标
+//               var likeIcon = $('#like-BI-' + checkinId);
+//               if (isLike === 'like') {
+//                 likeIcon.removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
                 
-              } else {
-                likeIcon.removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
-              }
-              // 更新点赞数
-              var likeCountElement = $('#like-btn-' + checkinId + ' span');
-              likeCountElement.text(likeCount);
-              // alert("New：likeCount:"+likeCount+',checkinID:'+checkinID+',isLike'+isLike)
-            },
-            error: function(xhr, status, error) {
-              // alert("错误：",status,error);
-              // 处理错误情况
-              // ...
-            }
-          });
+//               } else {
+//                 likeIcon.removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
+//               }
+//               // 更新点赞数
+//               var likeCountElement = $('#like-btn-' + checkinId + ' span');
+//               likeCountElement.text(likeCount);
+//               // alert("New：likeCount:"+likeCount+',checkinID:'+checkinID+',isLike'+isLike)
+//             },
+//             error: function(xhr, status, error) {
+//               // alert("错误：",status,error);
+//               // 处理错误情况
+//               // ...
+//             }
+//           });
         
-});
+// });
 
-      //点赞部分 
+    //   //点赞部分 
     //   $('a[id^="like-btn-"]').click(function(e) {
     //     alert("Old is runing!");
     //     e.preventDefault();
@@ -359,55 +359,92 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function createCheckinElement2(checkinData) {
+  var checkinHtml = `
+    <div class="card mb-5">
+      <div class="card-header bg-primary">
+        <div class="modal-header">
+          <div>
+            <h5 class="card-title" style="display: inline-block;">${checkinData.name}</h5>
+            <p class="badge bg-primary rounded-pill">${checkinData.class}</p>
+          </div>
+          <div>
+            ${checkinData.consecutive_checkins > 0 ? `<p class="badge bg-primary rounded-pill"><i class="bi bi-bookmark-check-fill"></i>连续打卡${checkinData.consecutive_checkins}天</p>` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="card-text">${checkinData.checkin_text}</p>
+      </div>
+      ${checkinData.checkin_image_url ? `<img class="card-img-bottom" src="${checkinData.checkin_image_url}" alt="${checkinData.checkin_text}">` : ''}
+      <div class="modal-header">
+        <div>
+          <p class="badge bg-primary rounded-pill">${checkinData.checkin_date}</p>
+          <p class="badge bg-primary rounded-pill">获得${checkinData.score}积分</p>
+        </div>
+        <div style="margin-right: 10px;">
+          <a id="like-btn-${checkinData.id}" class="rounded-pill" href="#" data-checkin-id="${checkinData.id}" style="text-decoration: none;">
+            <i id="like-BI-${checkinData.id}" class="bi ${checkinData.likescount ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'}"></i>
+            <span>${checkinData.likescount}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
 
-function dashboard(request) {
-  var loadMoreButton = $('#load-more-button');
-  var checkinContainer = $('#checkin-container');
-  var currentPageNumber = 1;  // 假设初始页码为1
-  // 获取提示信息元素
-  var di = document.getElementById('DI'); 
-  var loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber;  // 替换为您的URL
-  
-  loadMoreButton.click(function() {
-    
+  // Create a jQuery object from the HTML string
+  var checkinElement = $(checkinHtml);
+
+  // Bind click event to the like button
+  checkinElement.find(`#like-btn-${checkinData.id}`).click(function(e) {
+    e.preventDefault();
+
+    var checkinId = $(this).attr('data-checkin-id');
+    var likeUrl = '/like_checkin/' + checkinId + '/';
+
     $.ajax({
-      url: loadMoreUrl,
-      type: 'GET',
-      success: function(response_data) {
-        // alert(loadMoreUrl);
-        
-        var checkins_data = response_data.checkins;
-        // 遍历打卡记录数据并渲染到页面上
-        for (var i = 0; i < checkins_data.length; i++) {
-          var checkinData = checkins_data[i];
-          var checkinElement = createCheckinElement(checkinData);
-          
-          // 将打卡记录元素追加到容器中
-          checkinContainer.append(checkinElement);
+      url: likeUrl,
+      method: 'POST',
+      dataType: 'json',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      success: function(response) {
+        var isLike = response.message;
+        var checkinID = response.checkid;
+        var likeCount = response.likescount;
+
+        // Update like icon
+        var likeIcon = $('#like-BI-' + checkinId);
+        if (isLike === 'like') {
+          likeIcon.removeClass('bi-hand-thumbs-up').addClass('bi-hand-thumbs-up-fill');
+        } else {
+          likeIcon.removeClass('bi-hand-thumbs-up-fill').addClass('bi-hand-thumbs-up');
         }
-        currentPageNumber++;
-        loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber; 
-        // alert("currentPageNumber:"+currentPageNumber)
-        // showPopup("data.has_next_page:"+response_data.has_next_page)
-        // 检查是否还有更多记录
-        if (!response_data.has_next_page) {
-          // 隐藏加载更多按钮
-          loadMoreButton.hide();
-          di.style.display = 'block';
+
+        // Update like count
+        var likeCountElement = $('#like-btn-' + checkinId + ' span');
+        likeCountElement.text(likeCount);
+
+        if (isLike=="like") {
+          showPopup('点赞成功！')
+        } else {
+          showPopup('已取消！')
         }
+        // alert("likeCount: " + likeCount + ", checkinID: " + checkinID + ", isLike: " + isLike);
       },
       error: function(xhr, status, error) {
-        var errorMessage = '打卡数据加载失败，请重试！\n' + '状态码：' + xhr.status + '\n错误信息:' + error;
-        showPopup(errorMessage);
+        alert("错误：请先登录再点赞👍");
+        // Handle error cases
+        // ...
       }
     });
   });
-  // 执行一次点击事件
-  loadMoreButton.click();
+
+  return checkinElement;
 }
 
 
-// 创建打卡记录元素的函数
 function createCheckinElement(checkinData) {
   var checkin_Date = moment(checkinData.checkin_date, 'YYYY-MM-DD HH:mm:ss').toDate();
 
@@ -425,46 +462,41 @@ function createCheckinElement(checkinData) {
 
   var card = $('<div>').addClass('card mb-5');
   var cardHeader = $('<div>').addClass('card-header bg-primary');
-  var modalHeader = $('<div>').addClass('modal-header');
 
   var cardTitle = $('<h5>').addClass('card-title').text(checkinData.name).css('display', 'inline-block');
   var classBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(checkinData.class);
 
-  cardHeader.append(cardTitle, classBadge);
-
   if (checkinData.consecutive_checkins > 0) {
-    var consecutiveCheckins = $('<p>').addClass('badge bg-primary rounded-pill text-danger')
-      .html('<i class="bi bi-bookmark-check-fill"></i>连续打卡' + checkinData.consecutive_checkins + '天');
+    var consecutiveCheckins = $('<p>').addClass('badge bg-primary rounded-pill').html('<i class="bi bi-bookmark-check-fill"></i>连续打卡' + checkinData.consecutive_checkins + '天');
     cardHeader.append(consecutiveCheckins);
   }
 
+  cardHeader.append(cardTitle, classBadge);
+
   var cardBody = $('<div>').addClass('card-body');
   var cardText = $('<p>').addClass('card-text').text(checkinData.checkin_text);
-
   cardBody.append(cardText);
-
   card.append(cardHeader, cardBody);
 
   if (checkinData.checkin_image_url) {
     var onclickValue = "loadFullImage('" + checkinData.checkin_image_url + "')";
-    var cardImage = $('<img>').addClass('card-img-bottom').attr('src', checkinData.checkin_image_url)
-      .attr('alt', checkinData.checkin_text).attr('onclick', onclickValue);
+    var cardImage = $('<img>').addClass('card-img-bottom').attr('src', checkinData.checkin_image_url).attr('alt', checkinData.checkin_text).attr('onclick', onclickValue);
     card.append(cardImage);
   }
 
+  var modalHeader = $('<div>').addClass('modal-header');
   var modalHeaderLeft = $('<div>');
   var dateBadge = $('<p>').addClass('badge bg-primary rounded-pill').text(moment(formattedDate, 'YYYY-MM-DD HH:mm:ss').fromNow());
   var scoreBadge = $('<p>').addClass('badge bg-primary rounded-pill').text('获得' + checkinData.score + '积分');
 
   modalHeaderLeft.append(dateBadge, scoreBadge);
 
-  var likeBtn = $('<a>').attr('id', 'like-btn-' + checkinData.id).addClass('rounded-pill').attr('href', '#')
-    .attr('data-checkin-id', checkinData.id).css('text-decoration', 'none');
-  var likeIcon = $('<i>').attr('id', 'like-BI-' + checkinData.id).addClass('bi')
-    .addClass((checkinData.current_user_liked) ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up').css('width', '24');
+  var likeBtn = $('<a>').attr('id', 'like-btn-' + checkinData.id).addClass('rounded-pill').attr('href', '#').attr('data-checkin-id', checkinData.id).css('text-decoration', 'none');
+  var likeIcon = $('<i>').attr('id', 'like-BI-' + checkinData.id).addClass('bi').addClass((checkinData.current_user_liked) ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up').css('width', '24');
   var likeCount = $('<span>').text(checkinData.likescount);
 
   likeBtn.append(likeIcon, likeCount);
+
   var modalHeaderRight = $('<div>').addClass('badge rounded-pill').attr('ID', 'Likes').append(likeBtn);
 
   modalHeader.append(modalHeaderLeft, modalHeaderRight);
@@ -472,6 +504,47 @@ function createCheckinElement(checkinData) {
 
   return card;
 }
+
+
+function dashboard(request) {
+  var loadMoreButton = $('#load-more-button');
+  var checkinContainer = $('#checkin-container');
+  var currentPageNumber = 1;  // 假设初始页码为1
+  var di = document.getElementById('DI');
+  var loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber;
+  
+  loadMoreButton.click(function() {
+    $.ajax({
+      url: loadMoreUrl,
+      type: 'GET',
+      success: function(response_data) {
+        var checkins_data = response_data.checkins;
+        
+        for (var i = 0; i < checkins_data.length; i++) {
+          var checkinData = checkins_data[i];
+          var checkinElement = createCheckinElement2(checkinData);
+          
+          checkinContainer.append(checkinElement);
+        }
+        
+        currentPageNumber++;
+        loadMoreUrl = '{% url 'load_more_checkins' %}?page=' + currentPageNumber;
+        
+        if (!response_data.has_next_page) {
+          loadMoreButton.hide();
+          di.style.display = 'block';
+        }
+      },
+      error: function(xhr, status, error) {
+        var errorMessage = '打卡数据加载失败，请重试！\n' + '状态码：' + xhr.status + '\n错误信息:' + error;
+        showPopup(errorMessage);
+      }
+    });
+  });
+  
+  loadMoreButton.click();
+}
+
 
 function loadFullImage(imageUrl) {
   var modal = $('#fullImageModal');
