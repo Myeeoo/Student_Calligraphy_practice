@@ -105,6 +105,7 @@ def load_more_checkins(request):
             'likescount':checkin.get_likes_count(),
             'current_user_liked':True if request.user in checkin.likes.all() else False,
             'consecutive_checkins':checkin.consecutive_checkins,
+            'Islike':True if request.user in checkin.likes.all() else False,
             # 其他字段...
         }
         checkins_data.append(checkin_data)

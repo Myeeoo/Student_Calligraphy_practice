@@ -384,7 +384,7 @@ function createCheckinElement2(checkinData) {
         </div>
         <div style="margin-right: 10px;">
           <a id="like-btn-${checkinData.id}" class="rounded-pill" href="#" data-checkin-id="${checkinData.id}" style="text-decoration: none;">
-            <i id="like-BI-${checkinData.id}" class="bi ${checkinData.likescount ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'}"></i>
+            <i id="like-BI-${checkinData.id}" class="bi ${checkinData.Islike ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'}"></i>
             <span>${checkinData.likescount}</span>
           </a>
         </div>
