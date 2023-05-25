@@ -77,7 +77,7 @@
                     <span class="badge bg-primary rounded-pill">{{ student.total_score }} 分</span>
                   </li>
                 {% endfor %}
-                <li class="align-items-center "></li>
+                <li class="align-items-center list-unstyled" style="height: 30px;"></li>
               </ol>
             </div>
         
@@ -140,7 +140,7 @@
                     <span class="badge bg-primary rounded-pill">{{ student.total_score }} 分</span>
                   </li>
                 {% endfor %}
-                <li ></li>
+                <li class="align-items-center list-unstyled" style="height: 30px;"></li>
               </ol>
             </div>
         
@@ -376,10 +376,10 @@ function createCheckinElement2(checkinData) {
       <div class="card-body">
         <p class="card-text">${checkinData.checkin_text}</p>
       </div>
-      ${checkinData.checkin_image_url ? `<img class="card-img-bottom" src="${checkinData.checkin_image_url}" alt="${checkinData.checkin_text}">` : ''}
+      ${checkinData.checkin_image_url ? `<img class="card-img-bottom" src="${checkinData.checkin_image_url}" alt="${checkinData.checkin_text}" onclick="loadFullImage('" + ${checkinData.checkin_image_url} + "')">` : ''}
       <div class="modal-header">
         <div>
-          <p class="badge bg-primary rounded-pill">${time_since_checkin(checkinData.checkin_date)}</p>
+          <p class="badge bg-primary rounded-pill">${checkinData.checkin_date}</p>
           <p class="badge bg-primary rounded-pill">获得${checkinData.score}积分</p>
         </div>
         <div style="margin-right: 10px;">

@@ -19,4 +19,4 @@ def time_since_checkin(checkin_date):
     elif time_since < timedelta(days=1):
         return str(int(time_since.seconds / 3600)) + "小时前"
     else:
-        return checkin_datetime.strftime("%Y-%m-%d")
+        return checkin_datetime.strftime("%Y-%m-%d %H:%M:%S")

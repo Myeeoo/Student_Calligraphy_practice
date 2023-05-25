@@ -98,7 +98,7 @@ def load_more_checkins(request):
             'id':checkin.id,
             'name': checkin.student.name,
             'class': checkin.student.Classes.name,
-            'checkin_date': checkin_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'checkin_date': time_since_checkin(checkin_date.strftime('%Y-%m-%d %H:%M:%S')),
             'checkin_text': checkin.checkin_text,
             'checkin_image_url': checkin.checkin_image.url if checkin.checkin_image else '',
             'score':checkin.score,
