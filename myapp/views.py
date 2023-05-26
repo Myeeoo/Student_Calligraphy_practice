@@ -38,7 +38,7 @@ from django.core.management import execute_from_command_line
 def execute_update_commit_logs(request):
     # 调用Django的call_command函数执行update_commit_logs命令
     # call_command('update_commit_logs')
-    execute_from_command_line(['manage.py', 'update_commit_logs'])
+    execute_from_command_line(['manage.py', 'commit_logs', 'update'])
     # 执行完成后重定向到commit_logs页面或其他适当的页面
     return redirect('commit_logs')
 
