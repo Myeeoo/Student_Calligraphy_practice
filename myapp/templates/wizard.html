@@ -1,0 +1,11 @@
+<!-- wizard.html -->
+<form method="post" action="{% url 'myapp:wizard' %}">
+    {% csrf_token %}
+    {{ wizard.form }}
+    {% if wizard.steps.current == wizard.steps.last %}
+      <button type="submit">完成</button>
+    {% else %}
+      <button type="submit">下一步</button>
+    {% endif %}
+  </form>
+  
