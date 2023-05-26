@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+<h1>网站更新日志：</h1>
+
+  <a class="btn btn-primary" href="{% url 'execute_update_commit_logs' %}">执行更新日志 </a>
+  {% if logs%}
+{% for log in logs %}
+<div class="card mb-5 shadow">
+    <div class="card-header bg-success text-white" style="position: relative;  height: 25px;">
+        <p style="position: absolute; top: 50%; left:120px; transform: translate(-50%, -50%);">{{ log.date|date:'Y-m-d H:i:s'|time_since_checkin }}</p>
+    </div>
+          
+    <div class="card-body">
+        <h3>{{ log.message }}</h3>
+      </div>
+    
+      <dicv class="card-footer" >
+        <p style="position: relative;  height: 25px; "> by {{ log.author }}</p>
+      </dicv> 
+</div>
+{% endfor %}
+{%else%}
+<div><p>暂无网站更新日志</p></div>
+{%endif%}
+{% endblock %}

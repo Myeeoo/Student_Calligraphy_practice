@@ -11,7 +11,7 @@ def time_since_checkin(checkin_date):
     checkin_datetime = datetime.strptime(checkin_date, "%Y-%m-%d %H:%M:%S")
 
     time_since = now - checkin_datetime
-    print(time_since)
+    # print(time_since)
     if time_since < timedelta(minutes=1):
         return "刚刚"
     elif time_since < timedelta(hours=1):

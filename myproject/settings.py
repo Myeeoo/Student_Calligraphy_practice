@@ -14,7 +14,17 @@ import os
 from pathlib import Path
 import configparser
 
+# from apscheduler.schedulers.background import BackgroundScheduler
+# from django.core.management import call_command
+# from django.core.management import execute_from_command_line
+# # 创建调度器
+# scheduler = BackgroundScheduler()
+# 设置定时任务 execute_from_command_line(['manage.py', 'update_commit_logs'])
+# scheduler.add_job(call_command, 'interval', args=['update_commit_logs'], minutes=60)  # 每60分钟执行一次
+# scheduler.add_job(execute_from_command_line, 'interval',args=['update_commit_logs'], minutes=1)
 
+# 启动调度器
+# scheduler.start()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

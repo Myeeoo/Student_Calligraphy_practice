@@ -77,3 +77,8 @@ class Like(models.Model):
 
     def __str__(self):
         return f"Like: {self.user.username} - {self.checkin}"
+
+class CommitLog(models.Model):
+    author = models.CharField(max_length=100)
+    date = models.DateTimeField()
+    message = models.TextField()

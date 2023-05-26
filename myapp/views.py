@@ -11,7 +11,7 @@ from django.test import RequestFactory
 import pytz
 from django.contrib.auth.decorators import login_required, user_passes_test
 from myapp.templatetags.custom_filters import time_since_checkin
-from .models import Student, Score
+from .models import CommitLog, Student, Score
 from .forms import BindStudentForm, ScoreForm
 from django.forms import modelformset_factory
 from .forms import SignUpForm, LoginForm
@@ -31,6 +31,16 @@ from .models import Checkin
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
+from django.core.management import call_command
+from django.core.management import execute_from_command_line
+
+def execute_update_commit_logs(request):
+    # 调用Django的call_command函数执行update_commit_logs命令
+    # call_command('update_commit_logs')
+    execute_from_command_line(['manage.py', 'update_commit_logs'])
+    # 执行完成后重定向到commit_logs页面或其他适当的页面
+    return redirect('commit_logs')
 
 @csrf_exempt
 def create_class(request):
@@ -216,7 +226,7 @@ def unbind_student(request, student_id):
 def user_center(request):
     All_students = Student.objects.all()#user.student_set.all()
     mystudent = request.user.student_set.all()
-    print(mystudent)
+    # print(mystudent)
     form = BindStudentForm(request.POST or None, user=request.user)
     if request.method == 'POST' and form.is_valid():
         student = form.cleaned_data['student']
@@ -514,3 +524,7 @@ def like_checkin(request, checkin_id):
 
     }
     return JsonResponse(response_data)
+
+def commit_logs(request):
+    logs = CommitLog.objects.all().order_by('-date')  # 获取所有提交日志条目，按日期倒序排序
+    return render(request, 'commit_logs.html', {'logs': logs})
