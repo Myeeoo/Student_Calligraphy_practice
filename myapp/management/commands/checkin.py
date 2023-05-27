@@ -21,7 +21,7 @@ class Command(BaseCommand):
         parser.add_argument('action', choices=['update', 'delete'], help='Specify the action: update or delete')
 
     def handle(self, *args, **options):
-        print(args)
+        # print(args)
         action = options['action']
         if action == 'update':
             self.update_commit_logs()
