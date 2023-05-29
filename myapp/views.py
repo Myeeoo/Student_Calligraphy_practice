@@ -11,7 +11,7 @@ from django.test import RequestFactory
 import pytz
 from django.contrib.auth.decorators import login_required, user_passes_test
 from myapp.templatetags.custom_filters import time_since_checkin
-from .models import CommitLog, Student, Score
+from .models import CommitLog, Student, Score, StudentUser
 from .forms import BindStudentForm, ScoreForm
 from django.forms import modelformset_factory
 from .forms import SignUpForm, LoginForm
@@ -290,8 +290,8 @@ def checkin(request):
     return render(request, 'checkin.html', {'form': form, 'mystudent': mystudent})
 
 def calculate_score(checkin):
-    print(checkin)
-    print(checkin.checkin_date)
+    # print(checkin)
+    # print(checkin.checkin_date)
     # 基础积分为 3 分
     score = 3
     # 如果打卡文字和图片都有，则额外加 2 分
@@ -357,7 +357,20 @@ def logout_view(request):
 
 def student_list(request):
     students = Student.objects.all()
-    return render(request, 'student_list.html', {'students': students})
+    bindlist = StudentUser.objects.all()
+    All_classes = Classes.objects.all()
+    # 生成包含学生及其绑定状态的字典列表
+    student_data = []
+    for student in students:
+        is_bound = bindlist.filter(student=student).exists()
+        bind_user = bindlist.filter(student=student).first().user.username if is_bound else None
+        student_data.append({
+            'student': student,
+            'is_bound': is_bound,
+            'binduser':bind_user,
+            'classes':All_classes,
+        })
+    return render(request, 'student_list.html', {'students': student_data})
 
 def student_detail(request, student_id):
     student = get_object_or_404(Student, student_id=student_id)
