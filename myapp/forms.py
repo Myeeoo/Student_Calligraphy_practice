@@ -1,5 +1,5 @@
 from django import forms
-from .models import Score, Student, Checkin, StudentUser
+from .models import Score, Student, Checkin, StudentUser, Feedback
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -116,3 +116,11 @@ class ScoreForm(forms.ModelForm):
         mutable_data = self.data.copy()  # 创建可修改的 data 字典副本
         mutable_data['student_id'] = self.student_id  # 设置 student_id 到副本中
         self.data = mutable_data  # 将副本赋值给表单的 data 字典
+
+class FeedbackForm(forms.ModelForm):
+    title = forms.CharField(label='标题', widget=forms.Textarea(attrs={'rows': 1,'class': 'form-control'}),max_length=100)
+    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}), label='具体内容')
+    is_bug = forms.CheckboxInput()
+    class Meta:
+        model = Feedback
+        fields = ['title', 'content', 'is_bug']

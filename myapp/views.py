@@ -13,7 +13,7 @@ import pytz
 from django.contrib.auth.decorators import login_required, user_passes_test
 from myapp.templatetags.custom_filters import time_since_checkin
 from .models import CommitLog, Student, Score, StudentUser
-from .forms import BindStudentForm, ScoreForm
+from .forms import BindStudentForm, FeedbackForm, ScoreForm
 from django.forms import modelformset_factory
 from .forms import SignUpForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -581,3 +581,16 @@ def like_checkin(request, checkin_id):
 def commit_logs(request):
     logs = CommitLog.objects.all().order_by('-date')  # 获取所有提交日志条目，按日期倒序排序
     return render(request, 'commit_logs.html', {'logs': logs})
+
+def submit_feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.submitter = request.user
+            feedback.save()
+            return redirect('feedback_success')  # 可以重定向到一个反馈提交成功的页面
+    else:
+        form = FeedbackForm()
+    
+    return render(request, 'feedback_form.html', {'form': form})

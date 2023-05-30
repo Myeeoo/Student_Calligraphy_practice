@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% csrf_token %}
+{% block content %}
+<h2>建议及Bug提交</h2>
+<hr>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">提交</button>
+  </form>
+  {% endblock %}

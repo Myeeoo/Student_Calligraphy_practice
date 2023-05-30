@@ -17,7 +17,7 @@ from django import views
 from django.contrib import admin
 from django.urls import include, path
 from myapp.views import (
-    checkin, checkin_list, commit_logs, create_class, dashboard, delete_class, execute_update_commit_logs, get_all_classes, get_class, like_checkin, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, unbind_student, update_class, update_student, user_center
+    checkin, checkin_list, commit_logs, create_class, dashboard, delete_class, execute_update_commit_logs, get_all_classes, get_class, like_checkin, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, submit_feedback, unbind_student, update_class, update_student, user_center
 )
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
@@ -25,6 +25,7 @@ from django.conf import settings
 
 
 urlpatterns = [
+    path('feedback/', submit_feedback, name='submit_feedback'),
     path('', dashboard, name='dashboard'),
     path('checkin/', checkin, name='checkin'),
     path('checkin_list',checkin_list,name='checkin_list'),
