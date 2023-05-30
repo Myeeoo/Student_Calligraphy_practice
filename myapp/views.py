@@ -2,6 +2,7 @@ from copy import copy
 import datetime
 from imaplib import _Authenticator
 from multiprocessing import AuthenticationError
+import os
 from pyexpat.errors import messages as msg
 from telnetlib import LOGOUT
 from django.forms import formset_factory
@@ -34,6 +35,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.core.management import call_command
 from django.core.management import execute_from_command_line
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from PIL import Image
+from io import BytesIO
+import io
+
+
 
 def execute_update_commit_logs(request):
     # 调用Django的call_command函数执行update_commit_logs命令
@@ -248,7 +256,33 @@ def user_center(request):
             'form': form
             }
         return render(request, 'user_center.html', context)
-    
+
+def compress_image(image):
+    # Open the image using PIL
+    img = Image.open(image)
+
+    # Compress and convert the image to JPEG format with desired settings
+    img = img.convert('RGB')
+    img.thumbnail((1920, 1920))  # Adjust the size as per your requirements
+    img_io = BytesIO()
+    img.save(img_io, format='JPEG', quality=85)  # Adjust the quality as per your requirements
+
+    # Create a new file name for the compressed image
+    filename, ext = os.path.splitext(image.name)
+    compressed_filename = filename + '_compressed.jpg'
+
+    # Create a new InMemoryUploadedFile object for the compressed image
+    compressed_image = InMemoryUploadedFile(
+        img_io,
+        None,
+        compressed_filename,
+        'image/jpeg',
+        img_io.tell,
+        None
+    )
+
+    return compressed_image
+
 @login_required
 def checkin(request):
     if request.method == 'POST':
@@ -266,6 +300,12 @@ def checkin(request):
                 messages.error(request, f'{checkin.student.name}今天已经打过卡了！')
                 return redirect('/')
             
+            # 压缩上传的图像
+            if 'checkin_image' in request.FILES:
+                checkin_image = request.FILES['checkin_image']
+                compressed_image = compress_image(checkin_image)
+                checkin.checkin_image.save(checkin_image.name, compressed_image, save=False)
+
             checkin.score = calculate_score(checkin)
             checkin.save()
             messages.success(request, f'{checkin.student.name}打卡成功！刻苦练习获得{checkin.score}积分！')
