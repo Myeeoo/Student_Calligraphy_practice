@@ -3,10 +3,30 @@
 {% csrf_token %}
 {% block content %}
 <h2>建议及Bug提交</h2>
+<p>把您遇到的问题或建议尽量详细的描述出来，包括您经常使用的设备及浏览器信息。谢谢您的反馈!</p>
 <hr>
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">提交</button>
   </form>
+  <hr>
+  <h3>已提交的建议和 Bug：</h3>
+<ul>
+    {% for feedback in feedbacks %}
+    <div class="card mb-5 shadow">
+        <div class="card-header {% if feedback.is_bug %}bg-danger{% else %}bg-success{% endif %} text-white" style="position: relative; height: 25px;">
+            <p style="position: absolute; top: 50%; left:120px; transform: translate(-50%, -50%);">{{ feedback.submit_time|date:'Y-m-d H:i:s'|time_since_checkin }}</p>
+        </div>
+              
+        <div class="card-body">
+            <h3>{{ feedback.content  }}</h3>
+          </div>
+        
+          <dicv class="card-footer" >
+            <p style="position: relative;  height: 25px; "> 感谢用户 {{ feedback.submitter }} 的建议及反馈</p>
+          </dicv> 
+    </div>
+    {% endfor %}
+</ul>
   {% endblock %}

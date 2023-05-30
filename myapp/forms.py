@@ -121,6 +121,15 @@ class FeedbackForm(forms.ModelForm):
     title = forms.CharField(label='标题', widget=forms.Textarea(attrs={'rows': 1,'class': 'form-control'}),max_length=100)
     content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}), label='具体内容')
     is_bug = forms.CheckboxInput()
+    
     class Meta:
         model = Feedback
         fields = ['title', 'content', 'is_bug']
+    
+    # 自定义错误提示信息
+    def __init__(self, *args, **kwargs):
+        super(FeedbackForm, self).__init__(*args, **kwargs)
+        self.fields['content'].error_messages = {
+            'required': '请填写具体内容。',
+            'max_length': '内容过长，请控制在200字以内。'
+        }

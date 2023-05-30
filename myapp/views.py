@@ -12,7 +12,7 @@ from django.test import RequestFactory
 import pytz
 from django.contrib.auth.decorators import login_required, user_passes_test
 from myapp.templatetags.custom_filters import time_since_checkin
-from .models import CommitLog, Student, Score, StudentUser
+from .models import CommitLog, Feedback, Student, Score, StudentUser
 from .forms import BindStudentForm, FeedbackForm, ScoreForm
 from django.forms import modelformset_factory
 from .forms import SignUpForm, LoginForm
@@ -589,8 +589,8 @@ def submit_feedback(request):
             feedback = form.save(commit=False)
             feedback.submitter = request.user
             feedback.save()
-            return redirect('feedback_success')  # 可以重定向到一个反馈提交成功的页面
+            return redirect('submit_feedback')  # 可以重定向到一个反馈提交成功的页面
     else:
         form = FeedbackForm()
-    
-    return render(request, 'feedback_form.html', {'form': form})
+    feedbacks = Feedback.objects.all().order_by('-submit_time')  # 查询已提交的建议和 bug
+    return render(request, 'feedback_form.html', {'form': form, 'feedbacks': feedbacks})
