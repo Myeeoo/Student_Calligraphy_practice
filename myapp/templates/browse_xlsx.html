@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="xlsx_file" accept=".xlsx">
+    <input type="submit" value="浏览">
+</form>
+
+{% if data %}
+    <table>
+        {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                    <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+{% endblock %}

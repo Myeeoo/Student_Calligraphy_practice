@@ -40,8 +40,28 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 from io import BytesIO
 import io
+import openpyxl
 
+def browse_xlsx(request):
+    if request.method == 'POST':
+        # 获取上传的文件
+        file = request.FILES['xlsx_file']
 
+        # 打开XLSX文件
+        wb = openpyxl.load_workbook(file)
+
+        # 获取第一个工作表
+        sheet = wb.active
+
+        # 读取数据
+        data = []
+        for row in sheet.iter_rows(values_only=True):
+            data.append(row)
+
+        # 将数据传递给模板进行展示
+        return render(request, 'browse_xlsx.html', {'data': data})
+
+    return render(request, 'browse_xlsx.html')
 
 def execute_update_commit_logs(request):
     # 调用Django的call_command函数执行update_commit_logs命令
@@ -183,8 +203,8 @@ def dashboard(request):
 
 
     # Get the total number of points
-    total_points = Checkin.objects.aggregate(Sum('score'))['score__sum'] or 0
-
+    # total_points = Checkin.objects.aggregate(Sum('score'))['score__sum'] or 0
+    total_points = Checkin.objects.filter(student__Classes__id=1).aggregate(Sum('score'))['score__sum'] or 0
     # print(num_students)
     checkins = Checkin.objects.all().order_by('-checkin_date')[:5]
 
