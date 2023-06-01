@@ -263,13 +263,7 @@ def user_center(request):
         messages.success(request, '绑定成功！')
         return redirect('user_center')
     else:
-        try:
-            user = request.user
-            
-            # student = request.user.student
-            student = request.user.student_set.first()
-        except Student.DoesNotExist:
-            student = None
+        
         context = {
             'Student': mystudent,
             'students':All_students,

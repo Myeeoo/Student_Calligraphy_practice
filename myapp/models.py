@@ -1,3 +1,4 @@
+from ipaddress import summarize_address_range
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -41,6 +42,39 @@ class Student(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def get_checkin_count(self):
+        return Checkin.objects.filter(student=self).count()
+
+    def get_total_score(self):
+        return Score.objects.filter(student=self).aggregate(total_score=models.Sum('score'))['total_score'] or 0
+
+    def get_total_checkin_score(self):
+        return Checkin.objects.filter(student=self).aggregate(total_checkin_score=models.Sum('score'))['total_checkin_score'] or 0
+    
+    def get_last_checkin_date(self):
+        last_checkin = Checkin.objects.filter(student=self).order_by('-checkin_date').first()
+        return last_checkin.checkin_date if last_checkin else '暂无打卡记录'
+    
+    def get_highest_consecutive_checkins(self):
+        consecutive_checkins = Checkin.objects.filter(student=self).order_by('-consecutive_checkins').first()
+        if consecutive_checkins:
+            
+            return consecutive_checkins.consecutive_checkins
+        else:
+            return 0
+        
+    def get_likes_count(self):
+        likes_count = Like.objects.filter(checkin__student=self).count()
+        return likes_count
+    
+    def get_Top_Num(self):
+        top_students = Student.objects.annotate(total_score=models.Sum('checkin__score')).order_by('-total_score')
+    
+    # 获取当前学生的排名
+        rank = list(top_students).index(self) + 1
+
+        return rank
 
 class StudentUser(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)

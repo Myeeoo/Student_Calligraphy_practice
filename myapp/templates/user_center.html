@@ -52,16 +52,24 @@
     {% for student in Student %}
       {% if student %}
       
-        <div class="card">
+        <div class="card" style="width: 280px;">
           <div class="card-header">{{ student.name }}
             <a href="{% url 'unbind_student' student.pk %}" class="btn btn-danger unbind-btn" >解绑</a>
           </div>
-          <div class="card-body">
-            <ul>
-              <li>性别：{{ student.sex }}</li>
-              <li>年龄：{{ student.age }}</li>
-              <li>班级: {{ student.Classes.name }}</li>
+          <div class="card-body" >
+            <ul class="list-unstyled" style="font-size: small;">
+              <li>打卡次数: {{ student.get_checkin_count }}次</li>
+              <li>获得：{{ student.get_likes_count }}次点赞</li>
+              <li>总积分: {{ student.get_total_checkin_score }}分</li>
+              <li>积分排行：{{ student.get_Top_Num}}</li>
+              <li>最高连续打卡：{{ student.get_highest_consecutive_checkins }}天</li>
+              <li>最近打卡时间: {{ student.get_last_checkin_date }}</li>
+              
+              
             </ul>
+          </div>
+          <div class="card-footer">
+            <p style="font-size: small;">{{ student.Classes.name }}</p>
           </div>
         </div>
       {% else %}
