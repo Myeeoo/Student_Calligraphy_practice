@@ -13,7 +13,7 @@
         <tbody>
             {% for student in students %}
              <!-- 查看学生信息的模态框 -->
-                <div class="modal fade" id="viewModal{{ student.student.id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true" style="z-index: 9999;">
+                <div class="modal fade" id="viewModal{{ student.student.student_id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true" style="z-index: 9999;">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-primary text-white">
@@ -35,11 +35,11 @@
                   </div>
                 </div>
                 <!-- 查看学生信息的模态框 -->
-                <div class="modal fade" id="BindModal{{ student.student.id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true" style="z-index: 9999;">
+                <div class="modal fade" id="BindModal{{ student.student.student_id }}" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true" style="z-index: 9999;">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="viewModalLabel">学生绑定信息</h5>
+                        <h5 class="modal-title" id="viewModalLabel">学生绑定情况</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
@@ -55,7 +55,7 @@
                   </div>
                 </div>
               <!-- 修改学生信息的模态框 -->
-                <div class="modal fade" id="editModal{{ student.student.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" style="z-index: 9999;">
+                <div class="modal fade" id="editModal{{ student.student.student_id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" style="z-index: 9999;">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-primary text-white">
@@ -107,14 +107,14 @@
                 <td>{{ student.student.name }}</td>
                 <td>
                   {% if student.is_bound %}
-                  <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#BindModal{{ student.id }}">已绑定</a>
+                  <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#BindModal{{ student.student.student_id }}">已绑定</a>
                   {% else %}
-                  <a class="btn btn-sm" data-bs-toggle="modal">未绑定</a>
+                  <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#BindModal{{ student.student.student_id }}">未绑定</a>
                   {% endif %}
                 </td>
                 <td>
-                    <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal{{ student.student.id }}">查看</a>
-                    <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ student.student.id }}">修改</a>
+                    <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal{{ student.student.student_id }}">查看</a>
+                    <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ student.student.student_id }}">修改</a>
 
                 </td>
             </tr>

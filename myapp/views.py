@@ -417,13 +417,15 @@ def student_list(request):
     student_data = []
     for student in students:
         is_bound = bindlist.filter(student=student).exists()
-        bind_user = bindlist.filter(student=student).first().user.username if is_bound else None
+        bind_user = bindlist.filter(student=student).first().user.username if is_bound else '未绑定'
+        
         student_data.append({
             'student': student,
             'is_bound': is_bound,
             'binduser':bind_user,
             'classes':All_classes,
         })
+    
     return render(request, 'student_list.html', {'students': student_data})
 
 def student_detail(request, student_id):
