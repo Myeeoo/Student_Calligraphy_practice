@@ -59,17 +59,16 @@
           <div class="card-body" >
             <ul class="list-unstyled" style="font-size: small;">
               <li>打卡次数: {{ student.get_checkin_count }}次</li>
+              <li>连续打卡: {{ student.consecutive }}天</li>
               <li>获得：{{ student.get_likes_count }}次点赞</li>
               <li>总积分: {{ student.get_total_checkin_score }}分</li>
               <li>积分排行：{{ student.get_Top_Num}}</li>
               <li>最高连续打卡：{{ student.get_highest_consecutive_checkins }}天</li>
               <li>最近打卡时间: {{ student.get_last_checkin_date }}</li>
-              
-              
             </ul>
           </div>
-          <div class="card-footer">
-            <p style="font-size: small;">{{ student.Classes.name }}</p>
+          <div class="card-footer bg-primary">
+            <p style="font-size: small; color: whitesmoke;">{{ student.Classes.name }}</p>
           </div>
         </div>
       {% else %}
