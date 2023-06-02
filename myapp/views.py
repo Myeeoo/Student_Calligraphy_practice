@@ -199,12 +199,13 @@ def dashboard(request):
     num_checkins_today = Checkin.objects.filter(checkin_date__date=datetime.now().date()).count()
 
     # Get the top 10 students with the most points
-    top_students = Student.objects.annotate(total_score=Sum('checkin__score')).order_by('-total_score')[:10]
+    top_students = Student.objects.exclude(Classes__id=2).annotate(total_score=Sum('checkin__score')).order_by('-total_score')[:10]
 
 
     # Get the total number of points
     # total_points = Checkin.objects.aggregate(Sum('score'))['score__sum'] or 0
     total_points = Checkin.objects.filter(student__Classes__id=1).aggregate(Sum('score'))['score__sum'] or 0
+    
     # print(num_students)
     checkins = Checkin.objects.all().order_by('-checkin_date')[:5]
 
