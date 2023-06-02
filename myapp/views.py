@@ -378,6 +378,7 @@ def signup(request):
             user.is_active = True
             user.save()
             messages.success(request, '注册成功！')
+            login(request, user)
             return redirect('/')
         else:
             messages.error(request, '注册失败！')
