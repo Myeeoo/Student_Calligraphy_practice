@@ -69,11 +69,13 @@ class Student(models.Model):
         return likes_count
     
     def get_Top_Num(self):
-        top_students = Student.objects.annotate(total_score=models.Sum('checkin__score')).order_by('-total_score')
+        top_students = Student.objects.exclude(Classes__id=2).annotate(total_score=models.Sum('checkin__score')).order_by('-total_score')
     
-    # 获取当前学生的排名
-        rank = list(top_students).index(self) + 1
-
+        # 获取当前学生的排名
+        try:
+            rank = list(top_students).index(self) + 1
+        except ValueError:
+            rank = '不参与排名'
         return rank
 
 class StudentUser(models.Model):
