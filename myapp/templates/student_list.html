@@ -24,7 +24,6 @@
                         <!-- 在这里显示学生的详细信息 -->
                         <h4>基本信息</h4>
                         <ul class="list-unstyled" >
-                          <span>序号：{{ student.student.student_id }}</span>
                           <span>性别：{{ student.student.sex }}</span>
                           <span>年龄：{{ student.student.age }}</span>
                           <span>班级：{{ student.student.Classes }}</span>
@@ -32,6 +31,7 @@
                         
                         <hr>
                         <h4>练字打卡信息</h4>
+                        {% if student.is_bound %}
                         <ul class="list-unstyled" >
                           <li>打卡次数: {{ student.student.get_checkin_count }}次</li>
                           <li>连续打卡: {{ student.student.consecutive }}天</li>
@@ -41,6 +41,9 @@
                           <li>最高连续打卡：{{ student.student.get_highest_consecutive_checkins }}天</li>
                           <li>最近打卡时间: {{ student.student.get_last_checkin_date }}</li>
                         </ul>
+                        {% else %}
+                        <p>未绑定，无法读取打卡信息！</p>
+                        {% endif %}
                       </div>
                       <div class="modal-footer btn-danger text-white">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
