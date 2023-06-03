@@ -17,18 +17,32 @@
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="viewModalLabel">学生信息</h5>
+                        <h5 class="modal-title" id="viewModalLabel">{{ student.student.name }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <div class="modal-body">
+                      <div class="modal-body" style="font-size: small;">
                         <!-- 在这里显示学生的详细信息 -->
-                        <p>序号：{{ student.student.student_id }}</p>
-                        <p>姓名：{{ student.student.name }}</p>
-                        <p>性别：{{ student.student.sex }}</p>
-                        <p>年龄：{{ student.student.age }}</p>
-                        <p>班级：{{ student.student.Classes }}</p>
+                        <h4>基本信息</h4>
+                        <ul class="list-unstyled" >
+                          <span>序号：{{ student.student.student_id }}</span>
+                          <span>性别：{{ student.student.sex }}</span>
+                          <span>年龄：{{ student.student.age }}</span>
+                          <span>班级：{{ student.student.Classes }}</span>
+                        </ul>
+                        
+                        <hr>
+                        <h4>练字打卡信息</h4>
+                        <ul class="list-unstyled" >
+                          <li>打卡次数: {{ student.student.get_checkin_count }}次</li>
+                          <li>连续打卡: {{ student.student.consecutive }}天</li>
+                          <li>获得：{{ student.student.get_likes_count }}次点赞</li>
+                          <li>总积分: {{ student.student.get_total_checkin_score }}分</li>
+                          <li>积分排行：{{ student.student.get_Top_Num}}</li>
+                          <li>最高连续打卡：{{ student.student.get_highest_consecutive_checkins }}天</li>
+                          <li>最近打卡时间: {{ student.student.get_last_checkin_date }}</li>
+                        </ul>
                       </div>
-                      <div class="modal-footer bg-primary text-white">
+                      <div class="modal-footer btn-danger text-white">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
                       </div>
                     </div>
@@ -90,9 +104,6 @@
                               </select>
                             </div>
                           <!-- 其他表单字段 -->
-                          
-                          
-                        
                       </div>
                       <div class="modal-footer bg-primary text-white">
                         <button type="submit" class="btn btn-danger">保存</button>
