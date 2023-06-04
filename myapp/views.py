@@ -1,20 +1,11 @@
-from copy import copy
 import datetime
-from imaplib import _Authenticator
-from multiprocessing import AuthenticationError
 import os
-from pyexpat.errors import messages as msg
-from telnetlib import LOGOUT
-from django.forms import formset_factory
-from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
-from django.test import RequestFactory
 import pytz
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from myapp.templatetags.custom_filters import time_since_checkin
 from .models import CommitLog, Feedback, Student, Score, StudentUser
 from .forms import BindStudentForm, FeedbackForm, ScoreForm
-from django.forms import modelformset_factory
 from .forms import SignUpForm, LoginForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -23,23 +14,18 @@ from .models import Checkin,Classes
 from .forms import CheckinForm
 from django.contrib.auth import logout
 from django.shortcuts import render
-from django.db.models import Count
-from django.utils import timezone
 from django.db.models import Sum
 from datetime import datetime , timedelta
 from django.shortcuts import render
 from .models import Checkin
-from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from django.core.management import call_command
 from django.core.management import execute_from_command_line
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from PIL import Image
 from io import BytesIO
-import io
 import openpyxl
 
 def browse_xlsx(request):
