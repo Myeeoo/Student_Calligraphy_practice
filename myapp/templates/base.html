@@ -37,10 +37,7 @@
             }
         body {padding-top: 50px;}
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            
             z-index: 9998;
           }
         .navbar {
@@ -122,7 +119,13 @@
                       <i class="bi bi-person-lines-fill"></i> {{ user.username }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{% url 'user_center' %}">个人中心</a></li>
+                        <li><a class="dropdown-item" href="{% url 'user_center' %}"><i class="bi  bi-person-workspace"></i> 个人中心</a></li>
+                        
+                        <li><a class="dropdown-item" href="{% url 'student_list' %}"><i class="bi bi-list-ol"></i> 成员列表</a></li>
+                        <li><a class="dropdown-item" href="{% url 'commit_logs' %}"><i class="bi bi-braces-asterisk"></i> 更新与建议</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item bg-warning text-white"  href="#"><i class="bi bi-box2-heart-fill"></i> <em>盲盒(开发中)</em></a></li>
+                        <li><a class="dropdown-item bg-warning text-white" href="#"><i class="bi bi-envelope"></i> <em>用户消息(开发中)</em></a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">退出登录</a></li>
                     </ul>
@@ -233,8 +236,10 @@
             </ul>
           {% endif %}
         </div>
-        
-
+        <div style="position: fixed;">
+        {% block sidebar %}
+        {% endblock %}
+        </div>
         <div class="container mt-4">
             {% block content %}
             {% endblock %}
