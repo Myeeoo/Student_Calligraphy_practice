@@ -17,7 +17,7 @@ from django import views
 from django.contrib import admin
 from django.urls import include, path
 from myapp.views import (
-    browse_xlsx, checkin, checkin_list, commit_logs, create_class, dashboard, delete_class, execute_update_commit_logs, get_all_classes, get_class, like_checkin, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, submit_feedback, unbind_student, update_class, update_student, user_center
+    password_reset,browse_xlsx, checkin, checkin_list, commit_logs, create_class, dashboard, delete_class, execute_update_commit_logs, get_all_classes, get_class, like_checkin, load_more_checkins, login_v, logout_view,signup, student_list, student_detail, score_list, score_detail, add_student, add_score, submit_feedback, unbind_student, update_class, update_student, user_center
 )
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
@@ -59,4 +59,9 @@ urlpatterns = [
     path('like_checkin/<int:checkin_id>/', like_checkin, name='like_checkin'),
     path('commit-logs/', commit_logs, name='commit_logs'),
     path('execute-update-commit-logs/', execute_update_commit_logs, name='execute_update_commit_logs'),
+    # path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/', password_reset, name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

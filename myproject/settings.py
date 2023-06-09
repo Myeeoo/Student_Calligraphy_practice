@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 import configparser
-
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 # from apscheduler.schedulers.background import BackgroundScheduler
 # from django.core.management import call_command
 # from django.core.management import execute_from_command_line
@@ -186,4 +187,16 @@ PLOTLY_DASH = {
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
+# 邮件设置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
 
+EMAIL_HOST = 'smtp.qq.com'  
+EMAIL_PORT = 465  
+EMAIL_HOST_USER = config.get('Credentials', 'EMAIL_USER') 
+EMAIL_HOST_PASSWORD = config.get('Credentials', 'EMAIL_PASSWORD')  
+DEFAULT_FROM_EMAIL = config.get('Credentials', 'EMAIL_USER')  
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_SSL_CERTFILE = os.path.join(BASE_DIR, 'ssl', 'certificate.crt')
+EMAIL_SSL_KEYFILE = os.path.join(BASE_DIR, 'ssl', 'private.key')
+DEFAULT_CHARSET = 'utf-8'
