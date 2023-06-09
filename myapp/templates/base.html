@@ -133,8 +133,8 @@
             {% else %}
         <li class="nav-item active">
             <div style="display: flex;">
-                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登录</a>
-                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#signupModal">注册</a>
+                <a class="nav-link" href="{% url 'login_v' %}" data-bs-toggle="modal" data-bs-target="#loginModal">登录</a>
+                <a class="nav-link" href="{% url 'signup' %}" data-bs-toggle="modal" data-bs-target="#signupModal">注册</a>
             </div>
         </li>
     {% endif %}
