@@ -424,18 +424,23 @@ def student_detail(request, student_id):
 def update_student(request, student_id):
     # 获取要更新的学生对象
     student = get_object_or_404(Student, student_id=student_id)
-
+    print(request)
     if request.method == 'POST':
         # 处理POST请求，更新学生信息
         # 根据表单数据更新学生对象的属性
-
+        student.name = request.POST.get('name')
+        student.age = request.POST.get('age')
+        student.Classes_id = request.POST.get('classes')
         # 保存学生对象
         student.save()
 
         # 可以在这里添加一条成功消息，例如：messages.success(request, '学生信息已成功更新。')
-
-        # 重定向到学生详情页面或其他适当的页面
-        return redirect('student_detail', student_id=student.id)
+        if student:
+            messages.success(request, f'{student.name}信息已成功更新。')
+        else:
+            messages.error(request, '保存学生信息失败。')
+        # 重定向到成员列表
+        return redirect('student_list')
     
     # 如果是GET请求，显示学生信息更新的表单页面
     context = {

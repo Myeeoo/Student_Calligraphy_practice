@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>所有成员</h1><a class="btn btn-primary btn-sm" href="{% url 'add_student' %}">添加成员</a>
+    <li class="d-flex align-items-center"><span><h2>所有成员</h2></span>
+    <span><a class="btn btn-primary " href="{% url 'add_student' %}">添加成员</a></span>
+    <span><p class="btn-sm">任何账号都可通过此处添加成员，班级请使用亲友团。</p></span>
+    </li>
     <table class="table table-striped" style="border: 1px;">
         <thead>
             <tr>
@@ -24,9 +27,9 @@
                         <!-- 在这里显示学生的详细信息 -->
                         <h4>基本信息</h4>
                         <ul class="list-unstyled" >
-                          <span>性别：{{ student.student.sex }}</span>
-                          <span>年龄：{{ student.student.age }}</span>
-                          <span>班级：{{ student.student.Classes }}</span>
+                          <span class="btn btn-primary btn-sm">性别：<i class="bi bi-gender-female"></i>{{ student.student.sex }}</span>
+                          <span class="btn btn-primary btn-sm">年龄：{{ student.student.age }}</span>
+                          <span class="btn btn-primary btn-sm">班级：{{ student.student.Classes }}</span>
                         </ul>
                         
                         <hr>
@@ -81,7 +84,7 @@
                       </div>
                       <div class="modal-body">
                         <!-- 在这里显示修改学生信息的表单 -->
-                        <form action="{% url 'update_student' student.student.id % '/update'}" method="post">
+                        <form action="{% url 'update_student' student.student.student_id %}" method="post">
                           {% csrf_token %}
                           <div class="form-group">
                               <label for="name">姓名:</label>
@@ -90,8 +93,8 @@
                             <div class="form-group">
                               <label for="sex">性别:</label>
                               <select class="form-control" name="sex" id="sex">
-                                <option value="男生">男生</option>
-                                <option value="女生">女生</option>
+                                <option value="男生" {% if student.sex == "男生" %}selected{% endif %}>男生</option>
+                                <option value="女生" {% if student.sex == "女生" %}selected{% endif %}>女生</option>
                               </select>
                             </div>
                             <div class="form-group">
@@ -102,7 +105,7 @@
                               <label for="classes">班级:</label>
                               <select class="form-control" name="classes" id="classes">
                                 {% for class_obj in student.classes %}
-                                <option value="{{ class_obj.id }}">{{ class_obj.name }}</option>
+                                <option value="{{ class_obj.id }}" {% if class_obj.id == student.student.Classes.id %}selected{% endif %}>{{ class_obj.name }}</option>
                                 {% endfor %}
                               </select>
                             </div>
