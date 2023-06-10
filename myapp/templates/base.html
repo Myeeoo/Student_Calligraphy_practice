@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <meta charset="utf-8">
     <script>{% load static %}</script>
      <!-- 引入 jQuery 和 Bootstrap JavaScript -->
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.4/jquery.slim.min.js"></script>
@@ -125,7 +126,7 @@
                         <li><a class="dropdown-item" href="{% url 'commit_logs' %}"><i class="bi bi-braces-asterisk"></i> 更新与建议</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item bg-warning text-white"  href="#"><i class="bi bi-box2-heart-fill"></i> <em>盲盒(开发中)</em></a></li>
-                        <li><a class="dropdown-item bg-warning text-white" href="#"><i class="bi bi-envelope"></i> <em>用户消息(开发中)</em></a></li>
+                        <!-- <li><a class="dropdown-item bg-warning text-white" href="#"><i class="bi bi-envelope"></i> <em>用户消息(开发中)</em></a></li> -->
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-up-left"></i> 退出登录</a></li>
                     </ul>
@@ -258,15 +259,15 @@
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <h3>联系我们</h3>
-          <p>地址：大理镇广武路99号</p>
-          <p>电话：186-0872-0186</p>
+          <h3>关于我们</h3>
+          <h5>大理一小21级1班</h5>
+          <p>一群热爱练字的小朋友</p>
         </div>
         <div class="col-md-6">
           <h3>开发相关</h3>
           <p>专门为大理一小二(1)班的同学们开发的书法练习打卡积分网站。</p>
           <p>项目已开源<a class="nav-link" target="_blank" href="https://github.com/Myeeoo/Student_Calligraphy_practice.git">GitHub</a></p>
-          <a style="color: rgb(255, 164, 226)" class="nav-link" href="{% url 'commit_logs' %}">更新日志</a>
+          <a style="color: rgb(198, 193, 197)" class="nav-link" href="{% url 'commit_logs' %}">更新日志</a>
         </div>
         <ul>All CopyRight by 大理新梦圆 's eeoo</ul>
         <ul>滇ICP备2021000828号-1</ul>

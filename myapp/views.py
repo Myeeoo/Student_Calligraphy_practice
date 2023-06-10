@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 import datetime
 import os
+import certifi
 from django.shortcuts import render, get_object_or_404, redirect
 import pytz
 from django.contrib.auth.decorators import login_required
@@ -20,13 +22,24 @@ from django.shortcuts import render
 from .models import Checkin
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth import views as auth_views
 from django.core.management import execute_from_command_line
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.urls import reverse
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 from PIL import Image
 from io import BytesIO
 import openpyxl
+from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
+from django.core.mail import send_mail
 
 def browse_xlsx(request):
     if request.method == 'POST':
@@ -150,6 +163,10 @@ def checkin_list(request):
 
 def dashboard(request):
     today = datetime.now().date()
+    yesterday = today-timedelta(days=1)
+
+    this_month_start = today.replace(day=1)
+    next_month_start = this_month_start.replace(month=this_month_start.month + 1) if this_month_start.month < 12 else this_month_start.replace(year=this_month_start.year + 1, month=1)
 
     user=request.user
     # 本周的起始日期和结束日期
@@ -178,14 +195,27 @@ def dashboard(request):
     # 本周打卡人数
     num_checkins_this_week = Checkin.objects.filter(checkin_date__date__range=[this_week_start, this_week_end]).count()
 
+    # 上周打卡人数
+    num_checkins_last_week = Checkin.objects.filter(checkin_date__date__range=[Last_week_start, Last_week_end]).count()
+
     # 总打卡人数
     num_checkins_total = Checkin.objects.all().count()
 
-    # Get the number of students who have checked in today
-    num_checkins_today = Checkin.objects.filter(checkin_date__date=datetime.now().date()).count()
+    # 今日打卡人数
+    num_checkins_today = Checkin.objects.filter(checkin_date__date=today).count()
+
+    # 昨日打卡人数
+    num_checkins_yesterday = Checkin.objects.filter(checkin_date__date=yesterday).count()
+
 
     # Get the top 10 students with the most points
     top_students = Student.objects.exclude(Classes__id=2).annotate(total_score=Sum('checkin__score')).order_by('-total_score')[:10]
+
+    # Get the top 10 students with the most points of week
+    top_students_this_week = Student.objects.exclude(Classes__id=2).filter(checkin__checkin_date__range=[this_week_start, this_week_end]).annotate(total_score=Sum('checkin__score')).order_by('-total_score')[:10]
+
+    # Get the top 10 students with the most points of month
+    top_students_this_month = Student.objects.exclude(Classes__id=2).filter(checkin__checkin_date__range=[this_month_start, next_month_start]).annotate(total_score=Sum('checkin__score')).order_by('-total_score')[:10]
 
 
     # Get the total number of points
@@ -202,10 +232,14 @@ def dashboard(request):
         'Score_this_week_high_score':Score_this_week_high_score,
         'Score_this_week_high_add_score':Score_this_week_high_add_score,
         'num_checkins_this_week':num_checkins_this_week,
+        'num_checkins_last_week':num_checkins_last_week,
         'num_checkins_total':num_checkins_total,
         'num_students': num_students,
         'num_checkins_today': num_checkins_today,
+        'num_checkins_yesterday':num_checkins_yesterday,
         'top_students': top_students,
+        'top_students_this_week':top_students_this_week,
+        'top_students_this_month':top_students_this_month,
         'total_points': total_points,
         'checkins': checkins,
         'current_user':user,
@@ -603,3 +637,31 @@ def submit_feedback(request):
         form = FeedbackForm()
     feedbacks = Feedback.objects.all().order_by('-submit_time')  # 查询已提交的建议和 bug
     return render(request, 'feedback_form.html', {'form': form, 'feedbacks': feedbacks})
+
+def password_reset(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email).first()
+        if user:
+            # 生成密码重置令牌
+            token = default_token_generator.make_token(user)
+            # 生成密码重置链接
+            current_site = get_current_site(request)
+            mail_subject = 'Reset your password'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            message = render_to_string('password_reset.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'reset_link': reverse('password_reset_confirm', kwargs={'uidb64': user.id, 'token': token}),
+            })
+            print(email)
+            print(certifi.where())
+            # 发送密码重置邮件
+            send_mail(mail_subject, message, from_email, [email])
+            messages.success(request, '验证邮件已发送！')
+            return HttpResponseRedirect(reverse('password_reset_done'))
+        else:
+            messages.error(request, '邮箱地址有误！请重试')
+            return HttpResponseRedirect(reverse('password_reset'))
+    else:
+        return render(request, 'password_reset.html')

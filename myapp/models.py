@@ -1,7 +1,7 @@
 from ipaddress import summarize_address_range
 from django.db import models
 from django.contrib.auth.models import User
-
+from datetime import datetime , timedelta
 
 class Classes(models.Model):
     name = models.CharField(max_length=20,default='NewDream')
@@ -52,6 +52,24 @@ class Student(models.Model):
     def get_total_checkin_score(self):
         return Checkin.objects.filter(student=self).aggregate(total_checkin_score=models.Sum('score'))['total_checkin_score'] or 0
     
+    def get_total_checkin_score_this_week(self):
+        today = datetime.now().date()
+        yesterday = today-timedelta(days=1)
+        # 本周的起始日期和结束日期
+        this_week_start = today - timedelta(days=today.weekday())
+        this_week_end = this_week_start + timedelta(days=6)
+
+        Last_week_start = this_week_start-timedelta(days=7)
+        Last_week_end = this_week_end-timedelta(days=7)
+        return Checkin.objects.filter(student=self).filter(checkin_date__range=[this_week_start, this_week_end]).aggregate(total_checkin_score=models.Sum('score'))['total_checkin_score'] or 0
+    
+    def get_total_checkin_score_this_month(self):
+        today = datetime.now().date()
+        this_month_start = today.replace(day=1)
+        next_month_start = this_month_start.replace(month=this_month_start.month + 1) if this_month_start.month < 12 else this_month_start.replace(year=this_month_start.year + 1, month=1)
+
+        return Checkin.objects.filter(student=self).filter(checkin_date__range=[this_month_start, next_month_start - timedelta(days=1)]).aggregate(total_checkin_score=models.Sum('score'))['total_checkin_score'] or 0
+
     def get_last_checkin_date(self):
         last_checkin = Checkin.objects.filter(student=self).order_by('-checkin_date').first()
         return last_checkin.checkin_date if last_checkin else '暂无打卡记录'
